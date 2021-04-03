@@ -140,7 +140,7 @@ void draw_(int y_dir){
 		int y0 = y_dir + 3*i;
 		for(int j = 0; j < 30; j+=2){
 			int x0 = x + 6*(j / 2);
-			int colour = (circle_array[i][j] << 8) + circle_array[i][j+1];
+			int colour = (circle_array[i][j] << 12) + circle_array[i][j+1];
 			plot_pixel(x0, y0, colour);
 		}
 	}	
