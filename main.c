@@ -105,8 +105,19 @@ int main(void)
     pixel_buffer_start = *pixel_ctrl_ptr;
 
     clear_screen();
+	
     draw_circle();
-	draw_();
+	
+    int y0 = 0;
+    int dir = 1;
+    while(1) {
+	draw_(y0);
+	wait_cycle();
+	draw_black(y0);
+
+        y0 = y0 + dir;
+		
+    }
 }
 
 void draw_circle(){
@@ -122,14 +133,27 @@ void draw_circle(){
 	}	
 }
 
-void draw_(){
-	int x = 50;
-	int y = 100;
+void draw_(int y_dir){
+	int x = 110;
+	//int y_dir = 70;
 	for(int i = 0; i < 15; i++){
-		int y0 = y + 3*i;
+		int y0 = y_dir + 3*i;
 		for(int j = 0; j < 30; j+=2){
 			int x0 = x + 6*(j / 2);
 			int colour = (circle_array[i][j] << 8) + circle_array[i][j+1];
+			plot_pixel(x0, y0, colour);
+		}
+	}	
+}
+
+void draw_black(int y_dir){
+	int x = 110;
+	//int y_dir = 70;
+	for(int i = 0; i < 15; i++){
+		int y0 = y_dir + 3*i;
+		for(int j = 0; j < 30; j+=2){
+			int x0 = x + 6*(j / 2);
+			int colour = 0x0000;
 			plot_pixel(x0, y0, colour);
 		}
 	}	
