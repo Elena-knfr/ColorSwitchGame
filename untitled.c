@@ -108,15 +108,14 @@ int main(void)
     clear_screen();
 
     //draw_circle();
-	draw_circ(200, 10, 0xffff);
-
-	//draw_circ(40);
+    //draw_circ(200, 10, 0xffff);
+    //draw_circ(40);
 
 	int y0 = 50;
 	//int y1 = 50;
 	int r = 40;
-  int dir = 1;
-  while(y0 + 40 < 230) {
+  	int dir = 1;
+  	while(y0 + 40 < 230) {
 		if (y0 + 40 < 200 - 12) {
 			draw_circ(y0, r, 0x10ff);
 			draw_circ(200, 10, 0xffff);
