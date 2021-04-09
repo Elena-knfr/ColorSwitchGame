@@ -95,14 +95,18 @@ volatile int pixel_buffer_start; // global variable
 volatile int * pixel_ctrl_ptr;
 short int WHITE = 0xFFFF;
 
-void draw_circle();
+//void draw_circle();
 void plot_pixel(int x, int y, short int line_color);
 void swap(int* x, int* y);
 void draw_line(int x0, int y0, int x1, int y1, short int color);
 void clear_screen();
 void wait_cycle();
-void draw_();
+//void draw_();
 void draw_circ(int yc, int r, short int color);
+void right_down_arc(int yc, int r, short int color);
+void right_up_arc(int yc, int r, short int color);
+void left_down_arc(int yc, int r, short int color);
+void left_up_arc(int yc, int r, short int color);
 
 int main(void)
 {
@@ -136,12 +140,20 @@ int main(void)
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
-		draw_circ(y_obstacle, r_obstacle, 0x10ff);
+		//draw_circ(y_obstacle, r_obstacle, 0x10ff);
+		right_down_arc(y_obstacle, r_obstacle, 0x10ff);
+		right_up_arc(y_obstacle, r_obstacle, 0xFFE0);
+		left_down_arc(y_obstacle, r_obstacle, 0xF800);
+		left_up_arc(y_obstacle, r_obstacle, 0xC618);
 		draw_circ(y_player, r_player, 0xffff);
 		//draw_(y_obstacle);
 		wait_cycle();
 		//draw_black(y_obstacle);
-		draw_circ(y_obstacle, r_obstacle, 0x0000);
+		//draw_circ(y_obstacle, r_obstacle, 0x0000);
+		right_down_arc(y_obstacle, r_obstacle, 0x0000);
+		right_up_arc(y_obstacle, r_obstacle, 0x0000);
+		left_down_arc(y_obstacle, r_obstacle, 0x0000);
+		left_up_arc(y_obstacle, r_obstacle, 0x0000);
 		draw_circ(y_player, r_player, 0x0000);
 
 
@@ -279,6 +291,102 @@ void draw_circ(int yc, int r, short int color) {
 		plot_pixel(xc-x,yc-y,color);
 		plot_pixel(xc+x,yc-y,color);
 		plot_pixel(xc-x,yc+y,color);
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void right_down_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc+y,color);
+		plot_pixel(xc+y,yc+x,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void right_up_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+y,yc-x,color);
+		plot_pixel(xc+x,yc-y,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void left_down_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc-x,yc+y,color);
+		plot_pixel(xc-y,yc+x,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void left_up_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc-x,yc-y,color);
+		plot_pixel(xc-y,yc-x,color);
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
