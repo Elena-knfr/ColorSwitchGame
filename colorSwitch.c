@@ -1,4 +1,5 @@
-/* This files provides address values that exist in the system */
+	
+	/* This files provides address values that exist in the system */
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -69,6 +70,10 @@
 /* Screen size. */
 #define RESOLUTION_X 320
 #define RESOLUTION_Y 240
+	
+#define GROUND 200
+#define GRAVITY 5.5
+#define LIFT 30
 
 short int circle_array[15][30] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x08, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x41, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x62, 0x10, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -104,37 +109,86 @@ int main(void)
     pixel_ctrl_ptr = (int *)0xFF203020;
     /* Read location of the pixel buffer from the pixel buffer controller */
     pixel_buffer_start = *pixel_ctrl_ptr;
-
-    clear_screen();
+	
+	clear_screen();
 
     //draw_circle();
     //draw_circ(200, 10, 0xffff);
     //draw_circ(40);
 
-	int y0 = 50;
+	int y_obstacle = 50; //y coordinate of obstacle
 	//int y1 = 50;
-	int r = 40;
-  	int dir = 1;
-  	while(y0 + 40 < 230) {
-		if (y0 + 40 < 200 - 12) {
-			draw_circ(y0, r, 0x10ff);
-			draw_circ(200, 10, 0xffff);
-			//draw_(y0);
+	int r_obstacle = 40; //radius of obstacle
+	
+	
+	int y_player = 200; //y coordinate of obstacle
+	int r_player = 5; //radius of player
+	int velY = 0;
+	
+	int game_over = 0; //initialize game over to be false
+	
+  	//int dir = 1;
+	
+	
+	
+	
+	
+	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
+	int PS2_data, RVALID;
+	int keyPress;
+	char byte1 = 0, byte2 = 0;
+
+    	*(PS2_ptr) = 0xFF; //reset
+
+    
+  	while(!game_over) {
+		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
+		
+		draw_circ(y_obstacle, r_obstacle, 0x10ff);
+		draw_circ(y_player, r_player, 0xffff);
+		//draw_(y_obstacle);
+		wait_cycle();
+		//draw_black(y_obstacle);
+		draw_circ(y_obstacle, r_obstacle, 0x0000);
+		draw_circ(y_player, r_player, 0x0000);
+		
+		
+		y_player += velY + GRAVITY;
+		velY = velY*0.8;
+		if (y_player >= GROUND) 
+			y_player = GROUND;
+		
+		
+		
+		RVALID = PS2_data & 0x8000;
+	  	if (RVALID){
+			byte1 = byte2;
+			byte2 = PS2_data & 0xFF;;
+			if (byte2 == 0x29 && byte1 != 0xF0) { // if space is pressed
+				velY = -LIFT;
+			} 
+		}
+	  /*
+		if (y_obstacle + r_obstacle < 200 - 12) {
+			draw_circ(y_obstacle, r_obstacle, 0x10ff);
+			draw_circ(y_player, r_player, 0xffff);
+			//draw_(y_obstacle);
 			wait_cycle();
-			//draw_black(y0);
-			draw_circ(y0, r, 0x0000);
-			draw_circ(200, 10, 0x0000);
+			//draw_black(y_obstacle);
+			draw_circ(y_obstacle, r_obstacle, 0x0000);
+			draw_circ(y_player, r_player, 0x0000);
 		}
 		else {
-			draw_circ(y0, r, 0x10ff);
-			draw_circ(200, 10, 0x10ff);
+			draw_circ(y_obstacle, r_obstacle, 0x10ff);
+			draw_circ(y_player, r_player, 0x10ff);
 			wait_cycle();
-			draw_circ(y0, r, 0x0000);
-			draw_circ(200, 10, 0x0000);
-		}
+			draw_circ(y_obstacle, r_obstacle, 0x0000);
+			draw_circ(y_player, r_player, 0x0000);
+		}*/
+	}
 }
 
-void draw_circle(){
+/*void draw_circle(){
 	int x = 150;
 	int y = 150;
 	for(int i = 0; i < 15; i++){
@@ -145,7 +199,7 @@ void draw_circle(){
 			plot_pixel(x0, y0, colour);
 		}
 	}
-}
+}*/
 
 void draw_(int y_dir){
 	int x = 110;
