@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #define BOARD                 "DE1-SoC"
 
 /* Memory */
@@ -107,6 +108,11 @@ void right_down_arc(int yc, int r, short int color);
 void right_up_arc(int yc, int r, short int color);
 void left_down_arc(int yc, int r, short int color);
 void left_up_arc(int yc, int r, short int color);
+void left_arc(int yc, int r, short int color);
+void right_arc(int yc, int r, short int color);
+void bottom_arc(int yc, int r, short int color);
+void top_arc(int yc, int r, short int color);
+void delay(int number_of_seconds);
 
 int main(void)
 {
@@ -124,6 +130,7 @@ int main(void)
 	int y_player = 200; //y coordinate of obstacle
 	int r_player = 5; //radius of player
 	int velY = 0;
+	short int color_player = 0xffff;
 
 	int game_over = 0; //initialize game over to be false
 
@@ -140,16 +147,49 @@ int main(void)
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
-
 		//draw_circ(y_obstacle, r_obstacle, 0x10ff);
-		right_down_arc(y_obstacle, r_obstacle, 0x10ff);
-		right_up_arc(y_obstacle, r_obstacle, 0xFFE0);
-		left_down_arc(y_obstacle, r_obstacle, 0xF800);
-		left_up_arc(y_obstacle, r_obstacle, 0xC618);
-		if (y_player + r_player > y_obstacle + r_obstacle)
+		right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
+		left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
+		left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
+		right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow
+
+		/*bottom_arc(y_obstacle, r_obstacle, 0x10ff);
+		left_arc(y_obstacle, r_obstacle, 0xF800);
+		top_arc(y_obstacle, r_obstacle, 0xC618);
+		right_arc(y_obstacle, r_obstacle, 0xFFE0);
+
+		right_down_arc(y_obstacle, r_obstacle, 0xFFE0);
+		left_down_arc(y_obstacle, r_obstacle, 0x10ff);
+		left_up_arc(y_obstacle, r_obstacle, 0xF800);
+		right_up_arc(y_obstacle, r_obstacle, 0xC618);
+
+		bottom_arc(y_obstacle, r_obstacle, 0xFFE0);
+		left_arc(y_obstacle, r_obstacle, 0x10ff);
+		top_arc(y_obstacle, r_obstacle, 0xF800);
+		right_arc(y_obstacle, r_obstacle, 0xC618);
+
+		right_down_arc(y_obstacle, r_obstacle, 0xC618);
+		left_down_arc(y_obstacle, r_obstacle, 0xFFE0);
+		left_up_arc(y_obstacle, r_obstacle, 0x10ff);
+		right_up_arc(y_obstacle, r_obstacle, 0xF800);
+
+		bottom_arc(y_obstacle, r_obstacle, 0xC618);
+		left_arc(y_obstacle, r_obstacle, 0xFFE0);
+		top_arc(y_obstacle, r_obstacle, 0x10ff);
+		right_arc(y_obstacle, r_obstacle, 0xF800);
+
+		right_down_arc(y_obstacle, r_obstacle, 0xF800);
+		left_down_arc(y_obstacle, r_obstacle, 0xC618);
+		left_up_arc(y_obstacle, r_obstacle, 0xFFE0);
+		right_up_arc(y_obstacle, r_obstacle, 0x10ff);
+		*/
+		if (y_player + r_player > y_obstacle + r_obstacle && color_player != 0xFC18)
 			draw_circ(y_player, r_player, 0xffff);
-		else
+		else {
 			draw_circ(y_player, r_player, 0xFC18);
+			color_player = 0xFC18;
+		}
+
 		//draw_(y_obstacle);
 		wait_cycle();
 		//draw_black(y_obstacle);
@@ -405,35 +445,111 @@ void left_up_arc(int yc, int r, short int color) {
 	}
 }
 
-/*
-void draw_circ(int yc, int r, short int color) {
+void bottom_arc(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
 	int y=r;
 	int xc = 150;
 	//int yc = 100;
-	while(1){
-		while(x<=y)
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc+y,color);
+		plot_pixel(xc-x,yc+y,color);
+
+		if(d<=0)
 		{
-			//plot_pixel(xc+x,yc+y,color1);
-			plot_pixel(xc-y,yc-x,color2);
-			plot_pixel(xc+y,yc-x,color3);
-			plot_pixel(xc-y,yc+x,color4);
-			//plot_pixel(xc+y,yc+x,color5);
-			plot_pixel(xc-x,yc-y,color6);
-			plot_pixel(xc+x,yc-y,color7);
-			plot_pixel(xc-x,yc+y,color8);
-			if(d<=0)
-			{
-				d=d+4*x+6;
-			}
-			else
-			{
-				d=d+4*x-4*y+10;
-				y=y-1;
-			}
-			x=x+1;
+			d=d+4*x+6;
 		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
 	}
 }
-*/
+
+void right_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+y,yc+x,color);
+		plot_pixel(xc+y,yc-x,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void top_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc-y,color);
+		plot_pixel(xc-x,yc-y,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void left_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc-y,yc-x,color);
+		plot_pixel(xc-y,yc+x,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void delay(int number_of_seconds)
+{
+    // Converting time into milli_seconds
+    int milli_seconds = 1000 * number_of_seconds;
+
+    // Storing start time
+    clock_t start_time = clock();
+
+    // looping till required time is not achieved
+    while (clock() < start_time + milli_seconds)
+        ;
+}
