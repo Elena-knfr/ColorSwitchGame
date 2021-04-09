@@ -72,9 +72,10 @@
 #define RESOLUTION_X 320
 #define RESOLUTION_Y 240
 
-#define GROUND 200
-#define GRAVITY 5.5
-#define LIFT 30
+int GROUND = 230;
+#define GRAVITY 6
+#define LIFT 20
+#define	NUM_OBSTACLES 3
 
 short int circle_array[15][30] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x08, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x41, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x62, 0x10, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -113,6 +114,8 @@ void right_arc(int yc, int r, short int color);
 void bottom_arc(int yc, int r, short int color);
 void top_arc(int yc, int r, short int color);
 void delay(int number_of_seconds);
+bool is_inside_screen(int x, int y);
+void draw_circle_obstacle(int y, int r, short int color1, short int color2, short int color3, short int color4);
 
 int main(void)
 {
@@ -122,9 +125,8 @@ int main(void)
 
 	clear_screen();
 
-	int y_obstacle = 50; //y coordinate of obstacle
-	//int y1 = 50;
-	int r_obstacle = 40; //radius of obstacle
+	int y_obstacle [NUM_OBSTACLES] = {50, -70, -190}; //y coordinate of obstacle
+	int r_obstacle [NUM_OBSTACLES] = {40, 30, 50}; //radius of obstacle
 
 
 	int y_player = 200; //y coordinate of obstacle
@@ -142,14 +144,18 @@ int main(void)
 	char byte1 = 0, byte2 = 0;
 
     *(PS2_ptr) = 0xFF; //reset
-
+/*
 	right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
 	left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
 	left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
-	right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow
+	right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow*/
 
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
+
+		draw_circle_obstacle(y_obstacle[0], r_obstacle[0], 0x10ff, 0xF800, 0xC618, 0xFFE0);
+		draw_circle_obstacle(y_obstacle[1], r_obstacle[1], 0x10ff, 0xF800, 0xC618, 0xFFE0);
+		draw_circle_obstacle(y_obstacle[2], r_obstacle[2], 0x10ff, 0xF800, 0xC618, 0xFFE0);
 
 		/*
 		right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
@@ -188,7 +194,7 @@ int main(void)
 		right_up_arc(y_obstacle, r_obstacle, 0x10ff);
 		*/
 
-		if (y_player + r_player > y_obstacle + r_obstacle && color_player != 0xFC18)
+		if (y_player + r_player > y_obstacle[0] + r_obstacle[0] && color_player != 0xFC18)
 			draw_circ(y_player, r_player, 0xffff);
 		else {
 			draw_circ(y_player, r_player, 0xFC18);
@@ -203,13 +209,29 @@ int main(void)
 		left_down_arc(y_obstacle, r_obstacle, 0x0000);
 		left_up_arc(y_obstacle, r_obstacle, 0x0000);
 		*/
+		//draw objects black to erase them
+		draw_circle_obstacle(y_obstacle[0], r_obstacle[0], 0x0000, 0x0000, 0x0000, 0x0000);
+		draw_circle_obstacle(y_obstacle[1], r_obstacle[1], 0x0000, 0x0000, 0x0000, 0x0000);
+		draw_circle_obstacle(y_obstacle[2], r_obstacle[2], 0x0000, 0x0000, 0x0000, 0x0000);
+
 
 		draw_circ(y_player, r_player, 0x0000);
-
-		y_player += velY + GRAVITY;
-		velY = velY*0.8;
-		if (y_player >= GROUND)
-			y_player = GROUND;
+		//once the player jumps high enough
+		if (y_player + velY + GRAVITY > 120){
+			y_player += velY + GRAVITY;
+			velY = velY*0.8;
+			if (y_player >= GROUND)
+				y_player = GROUND;
+		} else {
+			//move all obstacles down
+			for (int i=0; i<NUM_OBSTACLES; i++ ){
+				y_obstacle[i] += 120 - (y_player + velY + GRAVITY);
+				if (y_obstacle[i] - r_obstacle[i] > RESOLUTION_Y)
+					y_obstacle[i] = y_obstacle[(i+2)%NUM_OBSTACLES] - 120;
+			}
+			GROUND += 120 - (y_player + velY + GRAVITY);
+			velY = velY*0.8;
+		}
 
 		RVALID = PS2_data & 0x8000;
 	  	if (RVALID){
@@ -243,7 +265,8 @@ int main(void)
 
 void plot_pixel(int x, int y, short int line_color)
 {
-    *(short int *)(pixel_buffer_start + (y << 10) + (x << 1)) = line_color;
+	if (is_inside_screen(x, y)) //only plot pixel if the xy coordinates are within screen bounds
+    	*(short int *)(pixel_buffer_start + (y << 10) + (x << 1)) = line_color;
 }
 
 void swap(int* x, int* y)
@@ -557,3 +580,20 @@ void delay(int number_of_seconds)
     while (clock() < start_time + milli_seconds)
         ;
 }
+
+//function that checks if a set of x y coordinates are within the screen limits
+//returns true or false
+bool is_inside_screen(int x, int y){
+	return (x>0 && x<RESOLUTION_X && y>0 && y<RESOLUTION_Y);
+}
+
+//wrapper function that calls all 4 draw arc functions to draw a full circle
+void draw_circle_obstacle(int y, int r, short int color1, short int color2, short int color3, short int color4){
+	right_down_arc(y, r, color1); 
+	left_down_arc(y, r, color2); 
+	left_up_arc(y, r, color3); 
+	right_up_arc(y, r, color4); 
+}
+
+
+	
