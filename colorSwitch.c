@@ -140,12 +140,16 @@ int main(void)
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
+
 		//draw_circ(y_obstacle, r_obstacle, 0x10ff);
 		right_down_arc(y_obstacle, r_obstacle, 0x10ff);
 		right_up_arc(y_obstacle, r_obstacle, 0xFFE0);
 		left_down_arc(y_obstacle, r_obstacle, 0xF800);
 		left_up_arc(y_obstacle, r_obstacle, 0xC618);
-		draw_circ(y_player, r_player, 0xffff);
+		if (y_player + r_player > y_obstacle + r_obstacle)
+			draw_circ(y_player, r_player, 0xffff);
+		else
+			draw_circ(y_player, r_player, 0xFC18);
 		//draw_(y_obstacle);
 		wait_cycle();
 		//draw_black(y_obstacle);
@@ -163,7 +167,6 @@ int main(void)
 			y_player = GROUND;
 
 
-
 		RVALID = PS2_data & 0x8000;
 	  	if (RVALID){
 			byte1 = byte2;
@@ -172,6 +175,8 @@ int main(void)
 				velY = -LIFT;
 			}
 		}
+
+
 	  /*
 		if (y_obstacle + r_obstacle < 200 - 12) {
 			draw_circ(y_obstacle, r_obstacle, 0x10ff);
@@ -399,3 +404,36 @@ void left_up_arc(int yc, int r, short int color) {
 		x=x+1;
 	}
 }
+
+/*
+void draw_circ(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	//int yc = 100;
+	while(1){
+		while(x<=y)
+		{
+			//plot_pixel(xc+x,yc+y,color1);
+			plot_pixel(xc-y,yc-x,color2);
+			plot_pixel(xc+y,yc-x,color3);
+			plot_pixel(xc-y,yc+x,color4);
+			//plot_pixel(xc+y,yc+x,color5);
+			plot_pixel(xc-x,yc-y,color6);
+			plot_pixel(xc+x,yc-y,color7);
+			plot_pixel(xc-x,yc+y,color8);
+			if(d<=0)
+			{
+				d=d+4*x+6;
+			}
+			else
+			{
+				d=d+4*x-4*y+10;
+				y=y-1;
+			}
+			x=x+1;
+		}
+	}
+}
+*/
