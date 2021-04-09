@@ -113,56 +113,63 @@ int main(void)
 	int game_over = 0; //initialize game over to be false
 
   	while(!game_over) {
-		
+
 		right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
 		left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
 		left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
 		right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow
 
 		delay(0.1);
-		
+
 		bottom_arc(y_obstacle, r_obstacle, 0x10ff);
 		left_arc(y_obstacle, r_obstacle, 0xF800);
 		top_arc(y_obstacle, r_obstacle, 0xC618);
 		right_arc(y_obstacle, r_obstacle, 0xFFE0);
 
 		delay(0.1);
-		
-		right_down_arc(y_obstacle, r_obstacle, 0xFFE0); 
+
+		right_down_arc(y_obstacle, r_obstacle, 0xFFE0);
 		left_down_arc(y_obstacle, r_obstacle, 0x10ff);
-		left_up_arc(y_obstacle, r_obstacle, 0xF800); 
-		right_up_arc(y_obstacle, r_obstacle, 0xC618); 
+		left_up_arc(y_obstacle, r_obstacle, 0xF800);
+		right_up_arc(y_obstacle, r_obstacle, 0xC618);
 
 		delay(0.1);
-		
+
 		bottom_arc(y_obstacle, r_obstacle, 0xFFE0);
 		left_arc(y_obstacle, r_obstacle, 0x10ff);
 		top_arc(y_obstacle, r_obstacle, 0xF800);
 		right_arc(y_obstacle, r_obstacle, 0xC618);
-		
-		delay(0.1);
-		
-		right_down_arc(y_obstacle, r_obstacle, 0xC618); 
-		left_down_arc(y_obstacle, r_obstacle, 0xFFE0);
-		left_up_arc(y_obstacle, r_obstacle, 0x10ff); 
-		right_up_arc(y_obstacle, r_obstacle, 0xF800); 
 
 		delay(0.1);
-		
+
+		right_down_arc(y_obstacle, r_obstacle, 0xC618);
+		left_down_arc(y_obstacle, r_obstacle, 0xFFE0);
+		left_up_arc(y_obstacle, r_obstacle, 0x10ff);
+		right_up_arc(y_obstacle, r_obstacle, 0xF800);
+
+		delay(0.1);
+
 		bottom_arc(y_obstacle, r_obstacle, 0xC618);
 		left_arc(y_obstacle, r_obstacle, 0xFFE0);
 		top_arc(y_obstacle, r_obstacle, 0x10ff);
 		right_arc(y_obstacle, r_obstacle, 0xF800);
 
 		delay(0.1);
-		
-		right_down_arc(y_obstacle, r_obstacle, 0xF800); 
+
+		right_down_arc(y_obstacle, r_obstacle, 0xF800);
 		left_down_arc(y_obstacle, r_obstacle, 0xC618);
-		left_up_arc(y_obstacle, r_obstacle, 0xFFE0); 
-		right_up_arc(y_obstacle, r_obstacle, 0x10ff); 
-		
+		left_up_arc(y_obstacle, r_obstacle, 0xFFE0);
+		right_up_arc(y_obstacle, r_obstacle, 0x10ff);
+
 		delay(0.1);
-				
+
+		bottom_arc(y_obstacle, r_obstacle, 0xF800);
+		left_arc(y_obstacle, r_obstacle, 0xC618);
+		top_arc(y_obstacle, r_obstacle, 0xFFE0);
+		right_arc(y_obstacle, r_obstacle, 0x10ff);
+
+		delay(0.1);
+
 	}
 }
 
@@ -288,7 +295,7 @@ void right_down_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc+x,yc+y,color);
 		plot_pixel(xc+y,yc+x,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -312,7 +319,7 @@ void right_up_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc+y,yc-x,color);
 		plot_pixel(xc+x,yc-y,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -336,7 +343,7 @@ void left_down_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc-x,yc+y,color);
 		plot_pixel(xc-y,yc+x,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -360,7 +367,7 @@ void left_up_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc-x,yc-y,color);
 		plot_pixel(xc-y,yc-x,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -384,7 +391,7 @@ void bottom_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc+x,yc+y,color);
 		plot_pixel(xc-x,yc+y,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -408,7 +415,7 @@ void right_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc+y,yc+x,color);
 		plot_pixel(xc+y,yc-x,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -432,7 +439,7 @@ void top_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc+x,yc-y,color);
 		plot_pixel(xc-x,yc-y,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -456,7 +463,7 @@ void left_arc(int yc, int r, short int color) {
 	{
 		plot_pixel(xc-y,yc-x,color);
 		plot_pixel(xc-y,yc+x,color);
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -474,10 +481,10 @@ void delay(float number_of_seconds)
 {
     // Converting time into milli_seconds
     float milli_seconds = 1000 * number_of_seconds;
-  
+
     // Storing start time
     clock_t start_time = clock();
-  
+
     // looping till required time is not achieved
     while (clock() < start_time + milli_seconds)
         ;
