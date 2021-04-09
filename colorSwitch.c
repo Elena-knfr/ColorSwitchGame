@@ -143,17 +143,21 @@ int main(void)
 
     *(PS2_ptr) = 0xFF; //reset
 
+	right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
+	left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
+	left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
+	right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow
 
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
-		//draw_circ(y_obstacle, r_obstacle, 0x10ff);
+		/*
 		right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
 		left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
 		left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
 		right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow
 
-		/*bottom_arc(y_obstacle, r_obstacle, 0x10ff);
+		bottom_arc(y_obstacle, r_obstacle, 0x10ff);
 		left_arc(y_obstacle, r_obstacle, 0xF800);
 		top_arc(y_obstacle, r_obstacle, 0xC618);
 		right_arc(y_obstacle, r_obstacle, 0xFFE0);
@@ -183,6 +187,7 @@ int main(void)
 		left_up_arc(y_obstacle, r_obstacle, 0xFFE0);
 		right_up_arc(y_obstacle, r_obstacle, 0x10ff);
 		*/
+
 		if (y_player + r_player > y_obstacle + r_obstacle && color_player != 0xFC18)
 			draw_circ(y_player, r_player, 0xffff);
 		else {
@@ -190,22 +195,21 @@ int main(void)
 			color_player = 0xFC18;
 		}
 
-		//draw_(y_obstacle);
 		wait_cycle();
-		//draw_black(y_obstacle);
-		//draw_circ(y_obstacle, r_obstacle, 0x0000);
+
+		/*
 		right_down_arc(y_obstacle, r_obstacle, 0x0000);
 		right_up_arc(y_obstacle, r_obstacle, 0x0000);
 		left_down_arc(y_obstacle, r_obstacle, 0x0000);
 		left_up_arc(y_obstacle, r_obstacle, 0x0000);
-		draw_circ(y_player, r_player, 0x0000);
+		*/
 
+		draw_circ(y_player, r_player, 0x0000);
 
 		y_player += velY + GRAVITY;
 		velY = velY*0.8;
 		if (y_player >= GROUND)
 			y_player = GROUND;
-
 
 		RVALID = PS2_data & 0x8000;
 	  	if (RVALID){
