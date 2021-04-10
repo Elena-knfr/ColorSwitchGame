@@ -132,19 +132,19 @@ int main(void)
 
 	bool run_game = false;
 
-	volatile int * PS2_ptr_IRQ89 = (int *) 0xFF200108;  // PS/2 port address
-	int PS2_data_IRQ89, RVALID_IRQ89;
-	int keyPress_IRQ89;
-	char byte1_IRQ89 = 0, byte2_IRQ89 = 0;
+	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
+	int PS2_data, RVALID;
+	int keyPress;
+	char byte1 = 0, byte2 = 0;
 
-    *(PS2_ptr_IRQ89) = 0xFF; //reset
+    *(PS2_ptr) = 0xFF; //reset
 	while(1) {
-		PS2_data_IRQ89 = *(PS2_ptr_IRQ89);
-		RVALID_IRQ89 = PS2_data_IRQ89 & 0x8000;
-	  	if (RVALID_IRQ89){
-			byte1_IRQ89 = byte2_IRQ89;
-			byte2_IRQ89 = PS2_data_IRQ89 & 0xFF;;
-			if (byte2_IRQ89 == 0x29 && byte1_IRQ89 != 0xF0) { // if space is pressed
+		PS2_data = *(PS2_ptr);
+		RVALID = PS2_data & 0x8000;
+	  	if (RVALID){
+			byte1 = byte2;
+			byte2 = PS2_data & 0xFF;;
+			if (byte2 == 0x29 && byte1 != 0xF0) { // if space is pressed
 				run_game = true;
 				break;
 			}
@@ -167,12 +167,12 @@ int main(void)
 
 	int spin_cycle = 0;
 
-	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
+	/*volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
 	int PS2_data, RVALID;
 	int keyPress;
-	char byte1 = 0, byte2 = 0;
+	char byte1 = 0, byte2 = 0;*/
 
-    *(PS2_ptr) = 0xFF; //reset
+    //*(PS2_ptr) = 0xFF; //reset
 /*
 	right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
 	left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
