@@ -436,7 +436,7 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 void startGame()
 {
 	int x = 30;
-	int y = 2;
+	int y = 10;
 	char startArray1[] = "COLOR SWITCH";
 	for (int i = 0; i < sizeof(startArray1); i++) {
 		*(char *) (character_buffer + (y << 7) + x) = startArray1[i];
@@ -444,7 +444,7 @@ void startGame()
 	}
 
 	x = 30;
-	y = 4;
+	y = 12;
 	char startArray2[] = "Press space to start";
 	for (int i = 0; i < sizeof(startArray2); i++) {
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
@@ -468,7 +468,7 @@ void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 void eraseMessage()
 {
 	int x = 30;
-	int y = 2;
+	int y = 10;
 	//char startArray1[] = "";
 	for (int i = 0; i < sizeof(startArray1); i++) {
 		startArray1[i] = '\0';
@@ -477,7 +477,7 @@ void eraseMessage()
 	}
 
 	x = 30;
-	y = 4;
+	y = 12;
 	//char startArray2[] = "";
 	for (int i = 0; i < sizeof(startArray2); i++) {
 		startArray2[i] = '\0';
