@@ -118,6 +118,7 @@ void spinningCircles(int y, int r, short int color1, short int color2, short int
 void runGame(int y0, int y1, int y2, int r0, int r1, int r2);
 void startGame();
 void eraseMessage();
+void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3);
 
 int main(void)
 {
@@ -450,6 +451,18 @@ void startGame()
 		x++;
 	}
 
+  draw_circle_obstacle(120, 50, BLUE, RED, GREY, YELLOW);
+	draw_circle_obstacle(120, 40, YELLOW, BLUE, RED, GREY);
+	draw_circle_obstacle(120, 30, GREY, YELLOW, BLUE, RED);
+	draw_circle_obstacle(120, 20, RED, GREY, YELLOW, BLUE);
+	draw_triangle(145, 115, 155, 120, 145, 125);
+
+}
+
+void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+	draw_line(x1, y1, x2, y2, GREY); //Usage: drawLine(x, y, x1, y1)
+  	draw_line(x2, y2, x3, y3, GREY);
+  	draw_line(x3, y3, x1, y1, GREY);
 }
 
 void eraseMessage()
