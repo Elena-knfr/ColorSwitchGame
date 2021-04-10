@@ -451,11 +451,23 @@ void startGame()
 		x++;
 	}
 
-  draw_circle_obstacle(120, 50, BLUE, RED, GREY, YELLOW);
-	draw_circle_obstacle(120, 40, YELLOW, BLUE, RED, GREY);
-	draw_circle_obstacle(120, 30, GREY, YELLOW, BLUE, RED);
-	draw_circle_obstacle(120, 20, RED, GREY, YELLOW, BLUE);
-	draw_triangle(145, 115, 155, 120, 145, 125);
+  for(int i = 50; i > 45; i--) {
+		draw_circle_obstacle(120, i, BLUE, RED, GREY, YELLOW);
+	}
+
+	for(int i = 40; i > 35; i--) {
+		draw_circle_obstacle(120, i, YELLOW, BLUE, RED, GREY);
+	}
+
+	for(int i = 30; i > 25; i--) {
+		draw_circle_obstacle(120, i, GREY, YELLOW, BLUE, RED);
+	}
+
+	for(int i = 20; i > 15; i--) {
+		draw_circle_obstacle(120, i, RED, GREY, YELLOW, BLUE);
+	}
+
+  draw_triangle(145, 115, 155, 120, 145, 125);
 
 }
 
