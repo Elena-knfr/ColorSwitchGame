@@ -165,7 +165,7 @@ int main(void)
 				r_obstacle[0], r_obstacle[1], r_obstacle[2]);
 
 
-		wait_cycle();
+		//wait_cycle();
 
 		draw_circ(y_player, r_player, 0x0000);
 
@@ -246,7 +246,7 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 
 		//draw_circ(y_player, r_player, 0x0000);
 
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, BLUE, RED, GREY, YELLOW);
@@ -254,7 +254,6 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle_shifted_color(y2, r2, BLUE, RED, GREY, YELLOW);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
@@ -262,7 +261,7 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 
 
 
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle(y0, r0, YELLOW, BLUE, RED, GREY);
@@ -270,13 +269,12 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle(y2, r2, YELLOW, BLUE, RED, GREY);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
 
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, YELLOW, BLUE, RED, GREY);
@@ -284,15 +282,13 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle_shifted_color(y2, r2, YELLOW, BLUE, RED, GREY);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
 
 
-		//delay(0.1);
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle(y0, r0, GREY, YELLOW, BLUE, RED);
@@ -300,13 +296,12 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle(y2, r2, GREY, YELLOW, BLUE, RED);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
 
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, GREY, YELLOW, BLUE, RED);
@@ -314,14 +309,12 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle_shifted_color(y2, r2, GREY, YELLOW, BLUE, RED);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
 
-		//delay(0.1);
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle(y0, r0, RED, GREY, YELLOW, BLUE);
@@ -329,13 +322,12 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle(y2, r2, RED, GREY, YELLOW, BLUE);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
 
-		wait_cycle();
+		//wait_cycle();
 		delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, RED, GREY, YELLOW, BLUE);
@@ -343,13 +335,11 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle_shifted_color(y2, r2, RED, GREY, YELLOW, BLUE);
 
 		wait_cycle();
-		//delay(0.01);
 
 		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-		//wait_cycle();
-		//delay(0.1);
+
 }
 
 void plot_pixel(int x, int y, short int line_color)
