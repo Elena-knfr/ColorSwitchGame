@@ -1,5 +1,4 @@
-
-	/* This files provides address values that exist in the system */
+/* This files provides address values that exist in the system */
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -127,11 +126,13 @@ int main(void)
 	int r_obstacle [NUM_OBSTACLES] = {40, 30, 50}; //radius of obstacle
 
 	int y_player = 200; //y coordinate of obstacle
-	int r_player = 5; //radius of player
+	int r_player = 3; //radius of player
 	int velY = 0;
 	short int color_player = 0xffff;
 
 	int game_over = 0; //initialize game over to be false
+	
+	int spin_cycle = 0;
 
 	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
 	int PS2_data, RVALID;
@@ -161,14 +162,69 @@ int main(void)
 		}
 
 
-		runGame(y_obstacle[0], y_obstacle[1], y_obstacle[2],
-				r_obstacle[0], r_obstacle[1], r_obstacle[2]);
+		//runGame(y_obstacle[0], y_obstacle[1], y_obstacle[2],r_obstacle[0], r_obstacle[1], r_obstacle[2]);
+		switch (spin_cycle) {
+			case 0:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], BLUE, RED, GREY, YELLOW);
+				}
+				break;
+			case 1:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], BLUE, RED, GREY, YELLOW);
+				}
+				break;
+			case 2:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], YELLOW, BLUE, RED, GREY);
+				}
+				break;
+			case 3:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], YELLOW, BLUE, RED, GREY);
+				}
+				break;
+			case 4:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], GREY, YELLOW, BLUE, RED);
+				}
+				break;
+			case 5:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], GREY, YELLOW, BLUE, RED);
+				}
+				break;
+			case 6:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], RED, GREY, YELLOW, BLUE);
+				}
+				break;
+			case 7:
+				for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], RED, GREY, YELLOW, BLUE);
+				}
+				break;			
+		}
 
-
-		//wait_cycle();
+		wait_cycle();
 
 		draw_circ(y_player, r_player, 0x0000);
 
+		if (spin_cycle%2 == 0) {//even
+			for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], 0x0000, 0x0000, 0x0000, 0x0000);
+				}
+		} else { //odd
+			for (int i=0; i<NUM_OBSTACLES; i++ ){
+					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], 0x0000, 0x0000, 0x0000, 0x0000);
+				}
+		}
+		
+		if (spin_cycle == 7)
+			spin_cycle = 0;
+		else 
+			spin_cycle++;
+		
 		//once the player jumps high enough
 		if (y_player + velY + GRAVITY > 120){
 			y_player += velY + GRAVITY;
