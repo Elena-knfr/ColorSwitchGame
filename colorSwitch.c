@@ -88,8 +88,11 @@ int GROUND = 230;
 #define	NUM_OBSTACLES 3
 
 volatile int pixel_buffer_start; // global variable
+volatile char* character_buffer = (char*) 0xC9000000;
 volatile int * pixel_ctrl_ptr;
 short int WHITE = 0xFFFF;
+char startArray1[] = "COLOR SWITCH";
+char startArray2[] = "Press space to start";
 
 //void draw_circle();
 void plot_pixel(int x, int y, short int line_color);
@@ -113,6 +116,8 @@ void draw_circle_obstacle(int y, int r, short int color1, short int color2, shor
 void draw_circle_obstacle_shifted_color(int y, int r, short int color1, short int color2, short int color3, short int color4);
 void spinningCircles(int y, int r, short int color1, short int color2, short int color3, short int color4);
 void runGame(int y0, int y1, int y2, int r0, int r1, int r2);
+void startGame();
+void eraseMessage();
 
 int main(void)
 {
@@ -121,6 +126,34 @@ int main(void)
     pixel_buffer_start = *pixel_ctrl_ptr;
 
 	  clear_screen();
+
+    eraseMessage();
+	startGame();
+
+	bool run_game = false;
+
+	volatile int * PS2_ptr_IRQ89 = (int *) 0xFF200108;  // PS/2 port address
+	int PS2_data_IRQ89, RVALID_IRQ89;
+	int keyPress_IRQ89;
+	char byte1_IRQ89 = 0, byte2_IRQ89 = 0;
+
+    *(PS2_ptr_IRQ89) = 0xFF; //reset
+	while(1) {
+		PS2_data_IRQ89 = *(PS2_ptr_IRQ89);
+		RVALID_IRQ89 = PS2_data_IRQ89 & 0x8000;
+	  	if (RVALID_IRQ89){
+			byte1_IRQ89 = byte2_IRQ89;
+			byte2_IRQ89 = PS2_data_IRQ89 & 0xFF;;
+			if (byte2_IRQ89 == 0x29 && byte1_IRQ89 != 0xF0) { // if space is pressed
+				run_game = true;
+				break;
+			}
+		}
+	}
+
+	clear_screen();
+	eraseMessage();
+	if(run_game) {
 
 	int y_obstacle [NUM_OBSTACLES] = {50, -70, -190}; //y coordinate of obstacle
 	int r_obstacle [NUM_OBSTACLES] = {40, 30, 50}; //radius of obstacle
@@ -131,7 +164,7 @@ int main(void)
 	short int color_player = 0xffff;
 
 	int game_over = 0; //initialize game over to be false
-	
+
 	int spin_cycle = 0;
 
 	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
@@ -203,7 +236,7 @@ int main(void)
 				for (int i=0; i<NUM_OBSTACLES; i++ ){
 					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], RED, GREY, YELLOW, BLUE);
 				}
-				break;			
+				break;
 		}
 
 		wait_cycle();
@@ -219,12 +252,12 @@ int main(void)
 					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], 0x0000, 0x0000, 0x0000, 0x0000);
 				}
 		}
-		
+
 		if (spin_cycle == 7)
 			spin_cycle = 0;
-		else 
+		else
 			spin_cycle++;
-		
+
 		//once the player jumps high enough
 		if (y_player + velY + GRAVITY > 120){
 			y_player += velY + GRAVITY;
@@ -271,6 +304,7 @@ int main(void)
 			draw_circ(y_player, r_player, 0x0000);
 		}*/
 	}
+}
 }
 
 void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
@@ -395,6 +429,48 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
 		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
+
+}
+
+void startGame()
+{
+	int x = 30;
+	int y = 2;
+	char startArray1[] = "COLOR SWITCH";
+	for (int i = 0; i < sizeof(startArray1); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = startArray1[i];
+		x++;
+	}
+
+	x = 30;
+	y = 4;
+	char startArray2[] = "Press space to start";
+	for (int i = 0; i < sizeof(startArray2); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
+		x++;
+	}
+
+}
+
+void eraseMessage()
+{
+	int x = 30;
+	int y = 2;
+	//char startArray1[] = "";
+	for (int i = 0; i < sizeof(startArray1); i++) {
+		startArray1[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray1[i];
+		x++;
+	}
+
+	x = 30;
+	y = 4;
+	//char startArray2[] = "";
+	for (int i = 0; i < sizeof(startArray2); i++) {
+		startArray2[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
+		x++;
+	}
 
 }
 
