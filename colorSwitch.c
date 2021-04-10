@@ -113,7 +113,7 @@ bool is_inside_screen(int x, int y);
 void draw_circle_obstacle(int y, int r, short int color1, short int color2, short int color3, short int color4);
 void draw_circle_obstacle_shifted_color(int y, int r, short int color1, short int color2, short int color3, short int color4);
 void spinningCircles(int y, int r, short int color1, short int color2, short int color3, short int color4);
-void runGame(int y0, int y1, int y2, int r0, int r1, int r2, int y_player, int r_player);
+void runGame(int y0, int y1, int y2, int r0, int r1, int r2);
 
 int main(void)
 {
@@ -148,8 +148,26 @@ int main(void)
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
+		//draw_circ(y_player, r_player, 0xffff);
+		if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
+			draw_circ(y_player, r_player, 0xffff);
+		else if (y_player + r_player > y_obstacle[1] + r_obstacle[1] && y_player + r_player < y_obstacle[0] + r_obstacle[0])
+			draw_circ(y_player, r_player, RED);
+		else if (y_player + r_player > y_obstacle[2] + r_obstacle[2] && y_player + r_player < y_obstacle[1] + r_obstacle[1])
+			draw_circ(y_player, r_player, YELLOW);
+		else {
+			draw_circ(y_player, r_player, 0xFC18);
+			//color_player = 0xFC18;
+		}
+
+
 		runGame(y_obstacle[0], y_obstacle[1], y_obstacle[2],
-				r_obstacle[0], r_obstacle[1], r_obstacle[2], y_player, r_player);
+				r_obstacle[0], r_obstacle[1], r_obstacle[2]);
+
+
+		wait_cycle();
+
+		draw_circ(y_player, r_player, 0x0000);
 
 		//once the player jumps high enough
 		if (y_player + velY + GRAVITY > 120){
@@ -199,11 +217,12 @@ int main(void)
 	}
 }
 
-void runGame(int y0, int y1, int y2, int r0, int r1, int r2, int y_player, int r_player) {
+void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 
 		draw_circle_obstacle(y0, r0, BLUE, RED, GREY, YELLOW);
 		draw_circle_obstacle(y1, r1, BLUE, RED, GREY, YELLOW);
 		draw_circle_obstacle(y2, r2, BLUE, RED, GREY, YELLOW);
+		//draw_circ(y_player, r_player, 0xffff);
 /*
 		if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
 			draw_circ(y_player, r_player, 0xffff);
@@ -225,7 +244,7 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2, int y_player, int r
 
 		//draw objects black to erase them
 
-		draw_circ(y_player, r_player, 0x0000);
+		//draw_circ(y_player, r_player, 0x0000);
 
 		wait_cycle();
 		delay(0.01);
