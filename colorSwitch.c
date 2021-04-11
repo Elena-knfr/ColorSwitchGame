@@ -195,7 +195,17 @@ int main(void)
 
   		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
-  		//draw_circ(y_player, r_player, 0xffff);
+      if(ABS(y_obstacle[2] - y_player) < r_player + r_obstacle[2])
+			   draw_circ(y_player, r_player, RED);
+		  else if(ABS(y_obstacle[1] - y_player) < r_player + r_obstacle[1])
+			   draw_circ(y_player, r_player, YELLOW);
+		  else if(ABS(y_obstacle[0] - y_player) < r_player + r_obstacle[0])
+			   draw_circ(y_player, r_player, CYAN);
+		  else
+			   draw_circ(y_player, r_player, 0xffff);
+
+      /*
+      //draw_circ(y_player, r_player, 0xffff);
   			for(int i = 0; i < 3; i++) {
   				if (y_player - r_player == y_obstacle[i] + r_obstacle[i]) {
   					if(ball_color[i] == color_part_obst) /////////////////////////////
@@ -209,7 +219,7 @@ int main(void)
 
   			if(break_loop == true)
   				break;
-
+      */
 		switch (spin_cycle) {
 			case 0:
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
