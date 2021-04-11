@@ -544,6 +544,10 @@ void startGame()
 		draw_line(220+i, 60, 235+i, 70, MAGENTA);
 	}
 
+  for(int i = 8; i > 0; i--) {
+		draw_circle_obstacle(210, i, YELLOW, YELLOW, YELLOW, YELLOW);
+	}
+
 }
 
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
