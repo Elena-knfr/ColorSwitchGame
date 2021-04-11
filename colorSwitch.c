@@ -130,6 +130,7 @@ void draw_obstacle_new(int y, int r, double start_angle, short int color1, short
 void draw_circle_angle_helper (int xc, int yc, int x, int y, double start_angle, short int color1, short int color2, short int color3, short int color4);
 float myAtan2(int a, int b);
 void load_circle(int yc, int r);
+int min (int a, int b);
 
 int main(void)
 {
@@ -170,7 +171,7 @@ int main(void)
 	int y_obstacle [NUM_OBSTACLES] = {50, -70, -190}; //y coordinate of obstacle
 	int r_obstacle [NUM_OBSTACLES] = {40, 40, 40}; //radius of obstacle
 	int rotate_speed [NUM_OBSTACLES] = {1, 1, 1};// 0.02908882, 0.02908882
-	int start_angle [NUM_OBSTACLES] = {0,0,0};
+	int start_shrift [NUM_OBSTACLES] = {0,35,20};
 	int pixel_shrift [NUM_OBSTACLES] = {0,0,0};
 
 	int y_player = 200; //y coordinate of obstacle
@@ -229,7 +230,6 @@ int main(void)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
 						else if (i<232)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], PINK);
-
 					}
 				}*/
 
@@ -240,13 +240,16 @@ int main(void)
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
 				for (int j=0; j<NUM_OBSTACLES; j++ ){
 					for (int i=0; i<232; i++){
-						if (i<pixel_shrift[j])
+						if (start_shrift[j]+pixel_shrift[j]+174 > 232 && i < (start_shrift[j]+pixel_shrift[j]+174)-232){
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+							//printf("here");
+						}else if (i<start_shrift[j]+pixel_shrift[j])
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
-						else if (i<pixel_shrift[j]+58)
+						else if (i<start_shrift[j]+pixel_shrift[j]+58)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
-						else if (i<pixel_shrift[j]+116)
+						else if (i<start_shrift[j]+pixel_shrift[j]+116)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
-						else if (i<pixel_shrift[j]+174)
+						else if (i<min(start_shrift[j]+pixel_shrift[j]+174, 232))
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
 						else if (i<232)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
@@ -258,13 +261,15 @@ int main(void)
 
 				for (int j=0; j<NUM_OBSTACLES; j++ ){
 					for (int i=0; i<232; i++){
-						if (i<pixel_shrift[j])
+						if (start_shrift[j]+pixel_shrift[j]+174 > 232 && i < (start_shrift[j]+pixel_shrift[j]+174)-232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+						else if (i<start_shrift[j]+pixel_shrift[j])
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
-						else if (i<pixel_shrift[j]+58)
+						else if (i<start_shrift[j]+pixel_shrift[j]+58)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
-						else if (i<pixel_shrift[j]+116)
+						else if (i<start_shrift[j]+pixel_shrift[j]+116)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
-						else if (i<pixel_shrift[j]+174)
+						else if (i<min(start_shrift[j]+pixel_shrift[j]+174, 232))
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
 						else if (i<232)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
@@ -275,13 +280,15 @@ int main(void)
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], GREY, YELLOW, BLUE, RED);
 				for (int j=0; j<NUM_OBSTACLES; j++ ){
 					for (int i=0; i<232; i++){
-						if (i<pixel_shrift[j])
+						if (start_shrift[j]+pixel_shrift[j]+174 > 232 && i < (start_shrift[j]+pixel_shrift[j]+174)-232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+						else if (i<start_shrift[j]+pixel_shrift[j])
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
-						else if (i<pixel_shrift[j]+58)
+						else if (i<start_shrift[j]+pixel_shrift[j]+58)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
-						else if (i<pixel_shrift[j]+116)
+						else if (i<start_shrift[j]+pixel_shrift[j]+116)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
-						else if (i<pixel_shrift[j]+174)
+						else if (i<min(start_shrift[j]+pixel_shrift[j]+174, 232))
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
 						else if (i<232)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
@@ -292,13 +299,15 @@ int main(void)
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], YELLOW, BLUE, RED, GREY);
 				for (int j=0; j<NUM_OBSTACLES; j++ ){
 					for (int i=0; i<232; i++){
-						if (i<pixel_shrift[j])
+						if (start_shrift[j]+pixel_shrift[j]+174 > 232 && i < (start_shrift[j]+pixel_shrift[j]+174)-232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+						else if (i<start_shrift[j]+pixel_shrift[j])
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
-						else if (i<pixel_shrift[j]+58)
+						else if (i<start_shrift[j]+pixel_shrift[j]+58)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
-						else if (i<pixel_shrift[j]+116)
+						else if (i<start_shrift[j]+pixel_shrift[j]+116)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
-						else if (i<pixel_shrift[j]+174)
+						else if (i<min(start_shrift[j]+pixel_shrift[j]+174, 232))
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
 						else if (i<232)
 							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
@@ -660,25 +669,18 @@ void load_circle(int yc, int r){
 		/*
 		obstacle_array[count][0]=y;
 		obstacle_array[count][1]=x;
-
 		obstacle_array[count+29][0]=x;
 		obstacle_array[count+29][1]=y;
-
 		obstacle_array[count+2*29][0]=-x;
 		obstacle_array[count+2*29][1]=y;
-
 		obstacle_array[count+3*29][0]=-y;
 		obstacle_array[count+3*29][1]=x;
-
 		obstacle_array[count+4*29][0]=-y;
 		obstacle_array[count+4*29][1]=-x;
-
 		obstacle_array[count+5*29][0]=-x;
 		obstacle_array[count+5*29][1]=-y;
-
 		obstacle_array[count+6*29][0]=x;
 		obstacle_array[count+6*29][1]=-y;
-
 		obstacle_array[count+7*29][0]=y;
 		obstacle_array[count+7*29][1]=-x;
 		*/
@@ -1062,25 +1064,10 @@ float myAtan2(int a, int b) {
     }
     return atan2val;
 }
-/*
-void spinningCircles(int y, int r, short int color1, short int color2, short int color3, short int color4) {
-	draw_circle_obstacle(y, r, color1, color2, color3, color4);
-	delay(0.1);
-	draw_circle_obstacle_shifted_color(y, r, color1, color2, color3, color4);
-	delay(0.1);
 
-	draw_circle_obstacle(y, r, color4, color1, color2, color3);
-	delay(0.1);
-	draw_circle_obstacle_shifted_color(y, r, color4, color1, color2, color3);
-	delay(0.1);
-
-	draw_circle_obstacle(y, r, color3, color4, color1, color2);
-	delay(0.1);
-	draw_circle_obstacle_shifted_color(y, r, color3, color4, color1, color2);
-	delay(0.1);
-
-	draw_circle_obstacle(y, r, color2, color3, color4, color1);
-	delay(0.1);
-	draw_circle_obstacle_shifted_color(y, r, color2, color3, color4, color1);
-	delay(0.1);
-}*/
+int min (int a, int b) {
+	if (a<b)
+		return a;
+	else
+		return b;
+}
