@@ -195,6 +195,7 @@ int main(void)
 
   		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
+      //collision detection
       if(ABS(y_obstacle[2] - y_player) < r_player + r_obstacle[2])
 			   draw_circ(y_player, r_player, RED);
 		  else if(ABS(y_obstacle[1] - y_player) < r_player + r_obstacle[1])
