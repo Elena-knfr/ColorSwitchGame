@@ -95,6 +95,8 @@ char startArray1[] = "COLOR SWITCH";
 char startArray2[] = "Press space to start";
 char startArray3[] = "Total Stars:";
 
+int obstacle_array[232][2];
+
 
 //void draw_circle();
 void plot_pixel(int x, int y, short int line_color);
@@ -121,6 +123,8 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2);
 void startGame();
 void eraseMessage();
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3);
+void load_circle(int yc, int r);
+
 
 int main(void)
 {
@@ -166,7 +170,10 @@ int main(void)
 	if(run_game) {
 
 	int y_obstacle [NUM_OBSTACLES] = {50, -70, -190}; //y coordinate of obstacle
-	int r_obstacle [NUM_OBSTACLES] = {40, 30, 50}; //radius of obstacle
+	int r_obstacle [NUM_OBSTACLES] = {40, 40, 40}; //radius of obstacle
+	int rotate_speed [NUM_OBSTACLES] = {1, 1, 1};// 0.02908882, 0.02908882
+	int start_angle [NUM_OBSTACLES] = {0,0,0};
+	int pixel_shrift [NUM_OBSTACLES] = {0,0,0};
 
 	int y_player = 200; //y coordinate of obstacle
 	int r_player = 3; //radius of player
@@ -189,11 +196,12 @@ int main(void)
 	left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
 	right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow*/
 
+	load_circle (y_obstacle[0], r_obstacle[0]);
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
 
-		PS2_data1 = *(PS2_ptr1);
+		/*PS2_data1 = *(PS2_ptr1);
 		RVALID1 = PS2_data1 & 0x8000;
 	  	if (RVALID1){
 			byte11 = byte22;
@@ -202,7 +210,7 @@ int main(void)
 				// pause the screen
 				// resume if space hit again
 			}
-		}
+		}*/
 
 
 
@@ -222,51 +230,85 @@ int main(void)
 		//runGame(y_obstacle[0], y_obstacle[1], y_obstacle[2],r_obstacle[0], r_obstacle[1], r_obstacle[2]);
 		switch (spin_cycle) {
 			case 0:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], BLUE, RED, GREY, YELLOW);
+				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
+				for (int j=0; j<NUM_OBSTACLES; j++ ){
+					for (int i=0; i<232; i++){
+						if (i<pixel_shrift[j])
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+						else if (i<pixel_shrift[j]+58)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+						else if (i<pixel_shrift[j]+116)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+						else if (i<pixel_shrift[j]+174)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+						else if (i<232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+					}
 				}
 				break;
 			case 1:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], BLUE, RED, GREY, YELLOW);
+				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0],RED, GREY, YELLOW, BLUE);
+				
+				for (int j=0; j<NUM_OBSTACLES; j++ ){
+					for (int i=0; i<232; i++){
+						if (i<pixel_shrift[j])
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+						else if (i<pixel_shrift[j]+58)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+						else if (i<pixel_shrift[j]+116)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+						else if (i<pixel_shrift[j]+174)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+						else if (i<232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+					}
 				}
 				break;
 			case 2:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], YELLOW, BLUE, RED, GREY);
+				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], GREY, YELLOW, BLUE, RED);
+				for (int j=0; j<NUM_OBSTACLES; j++ ){
+					for (int i=0; i<232; i++){
+						if (i<pixel_shrift[j])
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+						else if (i<pixel_shrift[j]+58)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+						else if (i<pixel_shrift[j]+116)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+						else if (i<pixel_shrift[j]+174)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+						else if (i<232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+					}
 				}
 				break;
 			case 3:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], YELLOW, BLUE, RED, GREY);
-				}
-				break;
-			case 4:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], GREY, YELLOW, BLUE, RED);
-				}
-				break;
-			case 5:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], GREY, YELLOW, BLUE, RED);
-				}
-				break;
-			case 6:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], RED, GREY, YELLOW, BLUE);
-				}
-				break;
-			case 7:
-				for (int i=0; i<NUM_OBSTACLES; i++ ){
-					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], RED, GREY, YELLOW, BLUE);
+				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], YELLOW, BLUE, RED, GREY);
+				for (int j=0; j<NUM_OBSTACLES; j++ ){
+					for (int i=0; i<232; i++){
+						if (i<pixel_shrift[j])
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+						else if (i<pixel_shrift[j]+58)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+						else if (i<pixel_shrift[j]+116)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+						else if (i<pixel_shrift[j]+174)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+						else if (i<232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+					}
 				}
 				break;
 		}
 
 		wait_cycle();
-
+		
+		//erase old frame
 		draw_circ(y_player, r_player, 0x0000);
-
+		for (int i=0; i<NUM_OBSTACLES; i++ ){
+			draw_circ(y_obstacle[i], r_obstacle[i], 0x0000);
+		}
+		
+		/*
 		if (spin_cycle%2 == 0) {//even
 			for (int i=0; i<NUM_OBSTACLES; i++ ){
 					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], 0x0000, 0x0000, 0x0000, 0x0000);
@@ -280,7 +322,29 @@ int main(void)
 		if (spin_cycle == 7)
 			spin_cycle = 0;
 		else
-			spin_cycle++;
+			spin_cycle++;*/
+		
+		for (int i=0; i<NUM_OBSTACLES; i++ ){
+			pixel_shrift [i] += rotate_speed [i];
+			
+			if (pixel_shrift[i] >= 58){
+				pixel_shrift[i] = 0;
+				if (spin_cycle == 3)
+					spin_cycle = 0;
+				else {
+					spin_cycle++;
+				}
+			}
+			/*
+			start_angle[i] += rotate_speed [i];
+			if (start_angle[i] >= M_PI/2){
+				start_angle[i] = 0;
+				if (spin_cycle == 3)
+					spin_cycle = 0;
+				else
+					spin_cycle++;
+			}*/
+		}
 
 		//once the player jumps high enough
 		if (y_player + velY + GRAVITY > 120){
@@ -329,131 +393,6 @@ int main(void)
 		}*/
 	}
 }
-}
-
-void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
-
-		draw_circle_obstacle(y0, r0, BLUE, RED, GREY, YELLOW);
-		draw_circle_obstacle(y1, r1, BLUE, RED, GREY, YELLOW);
-		draw_circle_obstacle(y2, r2, BLUE, RED, GREY, YELLOW);
-		//draw_circ(y_player, r_player, 0xffff);
-/*
-		if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
-			draw_circ(y_player, r_player, 0xffff);
-		else if (y_player + r_player > y_obstacle[1] + r_obstacle[1] && y_player + r_player < y_obstacle[0] + r_obstacle[0])
-			draw_circ(y_player, r_player, RED);
-		else if (y_player + r_player > y_obstacle[2] + r_obstacle[2] && y_player + r_player < y_obstacle[1] + r_obstacle[1])
-			draw_circ(y_player, r_player, YELLOW);
-		else {
-			draw_circ(y_player, r_player, 0xFC18);
-			//color_player = 0xFC18;
-		}
-*/
-
-		wait_cycle();
-
-		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-		//draw objects black to erase them
-
-		//draw_circ(y_player, r_player, 0x0000);
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle_shifted_color(y0, r0, BLUE, RED, GREY, YELLOW);
-		draw_circle_obstacle_shifted_color(y1, r1, BLUE, RED, GREY, YELLOW);
-		draw_circle_obstacle_shifted_color(y2, r2, BLUE, RED, GREY, YELLOW);
-
-		wait_cycle();
-
-		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle(y0, r0, YELLOW, BLUE, RED, GREY);
-		draw_circle_obstacle(y1, r1, YELLOW, BLUE, RED, GREY);
-		draw_circle_obstacle(y2, r2, YELLOW, BLUE, RED, GREY);
-
-		wait_cycle();
-
-		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle_shifted_color(y0, r0, YELLOW, BLUE, RED, GREY);
-		draw_circle_obstacle_shifted_color(y1, r1, YELLOW, BLUE, RED, GREY);
-		draw_circle_obstacle_shifted_color(y2, r2, YELLOW, BLUE, RED, GREY);
-
-		wait_cycle();
-
-		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle(y0, r0, GREY, YELLOW, BLUE, RED);
-		draw_circle_obstacle(y1, r1, GREY, YELLOW, BLUE, RED);
-		draw_circle_obstacle(y2, r2, GREY, YELLOW, BLUE, RED);
-
-		wait_cycle();
-
-		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle_shifted_color(y0, r0, GREY, YELLOW, BLUE, RED);
-		draw_circle_obstacle_shifted_color(y1, r1, GREY, YELLOW, BLUE, RED);
-		draw_circle_obstacle_shifted_color(y2, r2, GREY, YELLOW, BLUE, RED);
-
-		wait_cycle();
-
-		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle(y0, r0, RED, GREY, YELLOW, BLUE);
-		draw_circle_obstacle(y1, r1, RED, GREY, YELLOW, BLUE);
-		draw_circle_obstacle(y2, r2, RED, GREY, YELLOW, BLUE);
-
-		wait_cycle();
-
-		draw_circle_obstacle(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
-		//wait_cycle();
-		delay(0.01);
-
-		draw_circle_obstacle_shifted_color(y0, r0, RED, GREY, YELLOW, BLUE);
-		draw_circle_obstacle_shifted_color(y1, r1, RED, GREY, YELLOW, BLUE);
-		draw_circle_obstacle_shifted_color(y2, r2, RED, GREY, YELLOW, BLUE);
-
-		wait_cycle();
-
-		draw_circle_obstacle_shifted_color(y0, r0, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y1, r1, 0x0000, 0x0000, 0x0000, 0x0000);
-		draw_circle_obstacle_shifted_color(y2, r2, 0x0000, 0x0000, 0x0000, 0x0000);
-
 }
 
 void startGame()
@@ -696,6 +635,78 @@ void draw_circ(int yc, int r, short int color) {
 			y=y-1;
 		}
 		x=x+1;
+	}
+}
+
+void load_circle(int yc, int r){
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	int count = 0;
+	
+	while(x<=y)
+	{
+		/*
+		obstacle_array[count][0]=y;
+		obstacle_array[count][1]=x;
+		
+		obstacle_array[count+29][0]=x;
+		obstacle_array[count+29][1]=y;
+		
+		obstacle_array[count+2*29][0]=-x;
+		obstacle_array[count+2*29][1]=y;
+		
+		obstacle_array[count+3*29][0]=-y;
+		obstacle_array[count+3*29][1]=x;
+		
+		obstacle_array[count+4*29][0]=-y;
+		obstacle_array[count+4*29][1]=-x;
+		
+		obstacle_array[count+5*29][0]=-x;
+		obstacle_array[count+5*29][1]=-y;
+		
+		obstacle_array[count+6*29][0]=x;
+		obstacle_array[count+6*29][1]=-y;
+		
+		obstacle_array[count+7*29][0]=y;
+		obstacle_array[count+7*29][1]=-x;
+		*/
+		obstacle_array[count][0]=y;
+		obstacle_array[count][1]=x;
+		
+		obstacle_array[58-count-1][0]=x;
+		obstacle_array[58-count-1][1]=y;
+		
+		obstacle_array[count+2*29][0]=-x;
+		obstacle_array[count+2*29][1]=y;
+		
+		obstacle_array[4*29-count-1][0]=-y;
+		obstacle_array[4*29-count-1][1]=x;
+		
+		obstacle_array[count+4*29][0]=-y;
+		obstacle_array[count+4*29][1]=-x;
+		
+		obstacle_array[6*29-count-1][0]=-x;
+		obstacle_array[6*29-count-1][1]=-y;
+		
+		obstacle_array[count+6*29][0]=x;
+		obstacle_array[count+6*29][1]=-y;
+		
+		obstacle_array[8*29-count-1][0]=y;
+		obstacle_array[8*29-count-1][1]=-x;
+		
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+		count++;
 	}
 }
 
