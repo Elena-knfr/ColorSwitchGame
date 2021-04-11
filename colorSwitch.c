@@ -482,7 +482,7 @@ void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 
 void eraseMessage()
 {
-	int x = 0;
+	int x = 30;
 	int y = 10;
 	//char startArray1[] = "";
 	for (int i = 0; i < sizeof(startArray1); i++) {
