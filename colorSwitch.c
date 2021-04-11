@@ -93,6 +93,8 @@ volatile int * pixel_ctrl_ptr;
 short int WHITE = 0xFFFF;
 char startArray1[] = "COLOR SWITCH";
 char startArray2[] = "Press space to start";
+char startArray3[] = "Total Stars:";
+
 
 //void draw_circle();
 void plot_pixel(int x, int y, short int line_color);
@@ -126,7 +128,14 @@ int main(void)
     /* Read location of the pixel buffer from the pixel buffer controller */
     pixel_buffer_start = *pixel_ctrl_ptr;
 
-	  clear_screen();
+	volatile int * PS2_ptr1 = (int *) 0xFF200108;  // PS/2 port address
+	int PS2_data1, RVALID1;
+	int keyPress1;
+	char byte11 = 0, byte22 = 0;
+
+    *(PS2_ptr1) = 0xFF; //reset
+
+	clear_screen();
 
     eraseMessage();
 	startGame();
@@ -182,6 +191,20 @@ int main(void)
 
   	while(!game_over) {
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
+
+
+		PS2_data1 = *(PS2_ptr1);
+		RVALID1 = PS2_data1 & 0x8000;
+	  	if (RVALID1){
+			byte11 = byte22;
+			byte22 = PS2_data1 & 0xFF;;
+			if (byte22 == 0x29 && byte11 != 0xF0) { // if space is pressed
+				// pause the screen
+				// resume if space hit again
+			}
+		}
+
+
 
 		//draw_circ(y_player, r_player, 0xffff);
 		if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
@@ -472,6 +495,14 @@ void startGame()
 	//draw_triangle(145, 115, 155, 120, 145, 125);
 	draw_triangle(145, 110, 163, 120, 145, 130);
 
+	x = 7;
+	y = 35;
+	char startArray3[] = "Total Stars:";
+	for (int i = 0; i < sizeof(startArray3); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = startArray3[i];
+		x++;
+	}
+
 }
 
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
@@ -482,7 +513,7 @@ void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 
 void eraseMessage()
 {
-	int x = 30;
+	int x = 30; ////////////////////////////
 	int y = 10;
 	//char startArray1[] = "";
 	for (int i = 0; i < sizeof(startArray1); i++) {
@@ -497,6 +528,14 @@ void eraseMessage()
 	for (int i = 0; i < 200; i++) {
 		startArray2[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
+		x++;
+	}
+
+	x = 7;
+	y = 35;
+	for (int i = 0; i < sizeof(startArray3); i++) {
+		startArray3[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray3[i];
 		x++;
 	}
 
