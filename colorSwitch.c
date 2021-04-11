@@ -435,6 +435,8 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2) {
 
 void startGame()
 {
+
+
 	int x = 30;
 	int y = 10;
 	char startArray1[] = "COLOR SWITCH";
@@ -443,15 +445,15 @@ void startGame()
 		x++;
 	}
 
-	x = 30;
-	y = 12;
+	x = 27;
+	y = 13;
 	char startArray2[] = "Press space to start";
 	for (int i = 0; i < sizeof(startArray2); i++) {
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
 		x++;
 	}
 
-  for(int i = 50; i > 45; i--) {
+	for(int i = 50; i > 45; i--) {
 		draw_circle_obstacle(120, i, BLUE, RED, GREY, YELLOW);
 	}
 
@@ -467,7 +469,8 @@ void startGame()
 		draw_circle_obstacle(120, i, RED, GREY, YELLOW, BLUE);
 	}
 
-  draw_triangle(145, 115, 155, 120, 145, 125);
+	//draw_triangle(145, 115, 155, 120, 145, 125);
+	draw_triangle(145, 110, 163, 120, 145, 130);
 
 }
 
@@ -479,7 +482,7 @@ void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 
 void eraseMessage()
 {
-	int x = 30;
+	int x = 0;
 	int y = 10;
 	//char startArray1[] = "";
 	for (int i = 0; i < sizeof(startArray1); i++) {
@@ -488,10 +491,10 @@ void eraseMessage()
 		x++;
 	}
 
-	x = 30;
-	y = 12;
+	x = 0;
+	y = 13;
 	//char startArray2[] = "";
-	for (int i = 0; i < sizeof(startArray2); i++) {
+	for (int i = 0; i < 200; i++) {
 		startArray2[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
 		x++;
