@@ -476,53 +476,53 @@ void startGame()
 		x++;
 	}
 
-	for(int i = 50; i > 45; i--) {
-		draw_circle_obstacle(120, i, BLUE, RED, GREY, YELLOW);
-	}
+  for(int i = 50; i > 45; i--) {
+  		draw_circle_obstacle(120, i, BLUE, PINK, CYAN, MAGENTA);
+  	}
 
-	for(int i = 40; i > 35; i--) {
-		draw_circle_obstacle(120, i, YELLOW, BLUE, RED, GREY);
-	}
+  	for(int i = 40; i > 35; i--) {
+  		draw_circle_obstacle(120, i, MAGENTA, BLUE, PINK, CYAN);
+  	}
 
-	for(int i = 30; i > 25; i--) {
-		draw_circle_obstacle(120, i, GREY, YELLOW, BLUE, RED);
-	}
+  	for(int i = 30; i > 25; i--) {
+  		draw_circle_obstacle(120, i, CYAN, MAGENTA, BLUE, PINK);
+  	}
 
-	for(int i = 20; i > 15; i--) {
-		draw_circle_obstacle(120, i, RED, GREY, YELLOW, BLUE);
-	}
+  	for(int i = 20; i > 15; i--) {
+  		draw_circle_obstacle(120, i, PINK, CYAN, MAGENTA, BLUE);
+  	}
 
-	//draw_triangle(145, 115, 155, 120, 145, 125);
-	draw_triangle(145, 110, 163, 120, 145, 130);
+  	//draw_triangle(145, 115, 155, 120, 145, 125);
+  	draw_triangle(145, 110, 163, 120, 145, 130);
 
-	x = 7;
-	y = 35;
-	char startArray3[] = "Total Stars:";
-	for (int i = 0; i < sizeof(startArray3); i++) {
-		*(char *) (character_buffer + (y << 7) + x) = startArray3[i];
-		x++;
-	}
+  	x = 7;
+  	y = 35;
+  	char startArray3[] = "Total Stars:";
+  	for (int i = 0; i < sizeof(startArray3); i++) {
+  		*(char *) (character_buffer + (y << 7) + x) = startArray3[i];
+  		x++;
+  	}
 
-  // middle star
-	draw_line(48, 150, 42, 160, 0xFFE1);
-	draw_line(48, 150, 54, 160, 0xFFE1);
-	draw_line(40, 153, 54, 160, 0xFFE1);
-	draw_line(56, 153, 42, 160, 0xFFE1);
-	draw_line(56, 153, 40, 153, 0xFFE1);
+  	// middle star
+  	draw_line(48, 150, 42, 160, 0xFFEF);
+  	draw_line(48, 150, 54, 160, 0xFFEF);
+  	draw_line(40, 153, 54, 160, 0xFFEF);
+  	draw_line(56, 153, 42, 160, 0xFFEF);
+  	draw_line(56, 153, 40, 153, 0xFFEF);
 
-  // left star
-	draw_line(29, 150, 23, 160, 0xFFE1);
-	draw_line(29, 150, 35, 160, 0xFFE1);
-	draw_line(21, 153, 35, 160, 0xFFE1);
-	draw_line(37, 153, 23, 160, 0xFFE1);
-	draw_line(37, 153, 21, 153, 0xFFE1);
+  	// left star
+  	draw_line(29, 150, 23, 160, 0xFFEF);
+  	draw_line(29, 150, 35, 160, 0xFFEF);
+  	draw_line(21, 153, 35, 160, 0xFFEF);
+  	draw_line(37, 153, 23, 160, 0xFFEF);
+  	draw_line(37, 153, 21, 153, 0xFFEF);
 
-  // right star
-	draw_line(67, 150, 61, 160, 0xFFE1);
-	draw_line(67, 150, 73, 160, 0xFFE1);
-	draw_line(59, 153, 73, 160, 0xFFE1);
-	draw_line(75, 153, 61, 160, 0xFFE1);
-	draw_line(75, 153, 59, 153, 0xFFE1);
+  	// right star
+  	draw_line(67, 150, 61, 160, 0xFFEF);
+  	draw_line(67, 150, 73, 160, 0xFFEF);
+  	draw_line(59, 153, 73, 160, 0xFFEF);
+  	draw_line(75, 153, 61, 160, 0xFFEF);
+  	draw_line(75, 153, 59, 153, 0xFFEF);
 
 }
 
