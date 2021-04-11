@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 #define BOARD                 "DE1-SoC"
 
 /* VGA colors */
@@ -86,6 +87,7 @@ int GROUND = 230;
 #define GRAVITY 6
 #define LIFT 20
 #define	NUM_OBSTACLES 3
+#define ROTATION_SPEED 0.02908882 //angle change every 1/60 sec
 
 volatile int pixel_buffer_start; // global variable
 volatile char* character_buffer = (char*) 0xC9000000;
@@ -123,8 +125,11 @@ void runGame(int y0, int y1, int y2, int r0, int r1, int r2);
 void startGame();
 void eraseMessage();
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3);
-void load_circle(int yc, int r);
 
+void draw_obstacle_new(int y, int r, double start_angle, short int color1, short int color2, short int color3, short int color4);
+void draw_circle_angle_helper (int xc, int yc, int x, int y, double start_angle, short int color1, short int color2, short int color3, short int color4);
+float myAtan2(int a, int b);
+void load_circle(int yc, int r);
 
 int main(void)
 {
@@ -132,14 +137,7 @@ int main(void)
     /* Read location of the pixel buffer from the pixel buffer controller */
     pixel_buffer_start = *pixel_ctrl_ptr;
 
-	volatile int * PS2_ptr1 = (int *) 0xFF200108;  // PS/2 port address
-	int PS2_data1, RVALID1;
-	int keyPress1;
-	char byte11 = 0, byte22 = 0;
-
-    *(PS2_ptr1) = 0xFF; //reset
-
-	clear_screen();
+	  clear_screen();
 
     eraseMessage();
 	startGame();
@@ -198,21 +196,8 @@ int main(void)
 
 	load_circle (y_obstacle[0], r_obstacle[0]);
   	while(!game_over) {
+
 		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
-
-
-		/*PS2_data1 = *(PS2_ptr1);
-		RVALID1 = PS2_data1 & 0x8000;
-	  	if (RVALID1){
-			byte11 = byte22;
-			byte22 = PS2_data1 & 0xFF;;
-			if (byte22 == 0x29 && byte11 != 0xF0) { // if space is pressed
-				// pause the screen
-				// resume if space hit again
-			}
-		}*/
-
-
 
 		//draw_circ(y_player, r_player, 0xffff);
 		if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
@@ -226,8 +211,30 @@ int main(void)
 			//color_player = 0xFC18;
 		}
 
+/*for (int j=0; j<NUM_OBSTACLES; j++ ){
+					for (int i=0; i<232; i++){
+						if (i<29)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
+						else if (i<58)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
+						else if (i<87)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREEN);
+						else if (i<116)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
+						else if (i<145)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], CYAN);
+						else if (i<174)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], MAGENTA);
+						else if (i<203)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
+						else if (i<232)
+							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], PINK);
 
-		//runGame(y_obstacle[0], y_obstacle[1], y_obstacle[2],r_obstacle[0], r_obstacle[1], r_obstacle[2]);
+					}
+				}*/
+
+
+
 		switch (spin_cycle) {
 			case 0:
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
@@ -248,7 +255,7 @@ int main(void)
 				break;
 			case 1:
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0],RED, GREY, YELLOW, BLUE);
-				
+
 				for (int j=0; j<NUM_OBSTACLES; j++ ){
 					for (int i=0; i<232; i++){
 						if (i<pixel_shrift[j])
@@ -300,16 +307,18 @@ int main(void)
 				break;
 		}
 
+
+		// draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
+
+//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
+
+
+
 		wait_cycle();
-		
 		//erase old frame
 		draw_circ(y_player, r_player, 0x0000);
-		for (int i=0; i<NUM_OBSTACLES; i++ ){
-			draw_circ(y_obstacle[i], r_obstacle[i], 0x0000);
-		}
-		
-		/*
-		if (spin_cycle%2 == 0) {//even
+
+		/*if (spin_cycle%2 == 0) {//even
 			for (int i=0; i<NUM_OBSTACLES; i++ ){
 					draw_circle_obstacle(y_obstacle[i], r_obstacle[i], 0x0000, 0x0000, 0x0000, 0x0000);
 				}
@@ -317,16 +326,18 @@ int main(void)
 			for (int i=0; i<NUM_OBSTACLES; i++ ){
 					draw_circle_obstacle_shifted_color(y_obstacle[i], r_obstacle[i], 0x0000, 0x0000, 0x0000, 0x0000);
 				}
+		}*/
+		//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0],  0x0000,  0x0000,  0x0000,  0x0000);
+
+		for (int i=0; i<NUM_OBSTACLES; i++ ){
+			draw_circ(y_obstacle[i], r_obstacle[i], 0x0000);
 		}
 
-		if (spin_cycle == 7)
-			spin_cycle = 0;
-		else
-			spin_cycle++;*/
-		
+
+
 		for (int i=0; i<NUM_OBSTACLES; i++ ){
 			pixel_shrift [i] += rotate_speed [i];
-			
+
 			if (pixel_shrift[i] >= 58){
 				pixel_shrift[i] = 0;
 				if (spin_cycle == 3)
@@ -397,25 +408,23 @@ int main(void)
 
 void startGame()
 {
-
-
 	int x = 30;
-	int y = 10;
+	int y = 2;
 	char startArray1[] = "COLOR SWITCH";
 	for (int i = 0; i < sizeof(startArray1); i++) {
 		*(char *) (character_buffer + (y << 7) + x) = startArray1[i];
 		x++;
 	}
 
-	x = 27;
-	y = 13;
+	x = 30;
+	y = 4;
 	char startArray2[] = "Press space to start";
 	for (int i = 0; i < sizeof(startArray2); i++) {
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
 		x++;
 	}
 
-  for(int i = 50; i > 45; i--) {
+	for(int i = 50; i > 45; i--) {
   		draw_circle_obstacle(120, i, BLUE, PINK, CYAN, MAGENTA);
   	}
 
@@ -490,15 +499,16 @@ void startGame()
 }
 
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
-	draw_line(x1, y1, x2, y2, GREY); //Usage: drawLine(x, y, x1, y1)
+	draw_line(x1, y1, x2, y2, GREY);
   	draw_line(x2, y2, x3, y3, GREY);
   	draw_line(x3, y3, x1, y1, GREY);
 }
 
+
 void eraseMessage()
 {
-	int x = 30; ////////////////////////////
-	int y = 10;
+	int x = 30;
+	int y = 2;
 	//char startArray1[] = "";
 	for (int i = 0; i < sizeof(startArray1); i++) {
 		startArray1[i] = '\0';
@@ -506,10 +516,10 @@ void eraseMessage()
 		x++;
 	}
 
-	x = 0;
-	y = 13;
+	x = 30;
+	y = 4;
 	//char startArray2[] = "";
-	for (int i = 0; i < 200; i++) {
+	for (int i = 0; i < sizeof(startArray2); i++) {
 		startArray2[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
 		x++;
@@ -644,58 +654,58 @@ void load_circle(int yc, int r){
 	int y=r;
 	int xc = 150;
 	int count = 0;
-	
+
 	while(x<=y)
 	{
 		/*
 		obstacle_array[count][0]=y;
 		obstacle_array[count][1]=x;
-		
+
 		obstacle_array[count+29][0]=x;
 		obstacle_array[count+29][1]=y;
-		
+
 		obstacle_array[count+2*29][0]=-x;
 		obstacle_array[count+2*29][1]=y;
-		
+
 		obstacle_array[count+3*29][0]=-y;
 		obstacle_array[count+3*29][1]=x;
-		
+
 		obstacle_array[count+4*29][0]=-y;
 		obstacle_array[count+4*29][1]=-x;
-		
+
 		obstacle_array[count+5*29][0]=-x;
 		obstacle_array[count+5*29][1]=-y;
-		
+
 		obstacle_array[count+6*29][0]=x;
 		obstacle_array[count+6*29][1]=-y;
-		
+
 		obstacle_array[count+7*29][0]=y;
 		obstacle_array[count+7*29][1]=-x;
 		*/
 		obstacle_array[count][0]=y;
 		obstacle_array[count][1]=x;
-		
+
 		obstacle_array[58-count-1][0]=x;
 		obstacle_array[58-count-1][1]=y;
-		
+
 		obstacle_array[count+2*29][0]=-x;
 		obstacle_array[count+2*29][1]=y;
-		
+
 		obstacle_array[4*29-count-1][0]=-y;
 		obstacle_array[4*29-count-1][1]=x;
-		
+
 		obstacle_array[count+4*29][0]=-y;
 		obstacle_array[count+4*29][1]=-x;
-		
+
 		obstacle_array[6*29-count-1][0]=-x;
 		obstacle_array[6*29-count-1][1]=-y;
-		
+
 		obstacle_array[count+6*29][0]=x;
 		obstacle_array[count+6*29][1]=-y;
-		
+
 		obstacle_array[8*29-count-1][0]=y;
 		obstacle_array[8*29-count-1][1]=-x;
-		
+
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -936,6 +946,123 @@ void draw_circle_obstacle_shifted_color(int y, int r, short int color1, short in
 	right_arc(y, r, color4);
 }
 
+void draw_obstacle_using_angle (int center_y, int r, double start_angle, short int color1, short int color2, short int color3, short int color4){
+	const float theta_spacing = 0.07;
+	float costheta, sintheta;
+	int circlex, circley;
+	for (float theta=start_angle; theta < start_angle + 2*M_PI; theta += theta_spacing) {
+		// precompute sines and cosines of theta
+    	costheta = cos(theta);
+		sintheta = sin(theta);
+
+		circlex = (int)(RESOLUTION_X/2 + r*costheta);
+      	circley = (int)(center_y + r*sintheta);
+
+		if (theta >= start_angle && theta < start_angle + M_PI/2)
+			plot_pixel(circlex,circley,color1);
+		else if (theta >= start_angle + M_PI/2 && theta < start_angle + M_PI)
+			plot_pixel(circlex,circley,color2);
+		else if (theta >= start_angle + M_PI && theta < start_angle + 3*M_PI/2)
+			plot_pixel(circlex,circley,color3);
+		else if (theta >= start_angle + 2*M_PI/3 && theta < start_angle + 2*M_PI)
+			plot_pixel(circlex,circley,color4);
+	}
+
+}
+
+void draw_obstacle_new(int yc, int r, double start_angle, short int color1, short int color2, short int color3, short int color4) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+
+	while(x<=y)
+	{
+		draw_circle_angle_helper (xc, yc, x, y, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, -y, -x, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, +y, -x, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, -y, +x, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, y, x, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, -x, -y, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, +x, -y, start_angle, color1, color2, color3, color4);
+		draw_circle_angle_helper (xc, yc, -x, +y, start_angle, color1, color2, color3, color4);
+
+
+		/*
+		plot_pixel(xc+x,yc+y,color);
+		plot_pixel(xc-y,yc-x,color);
+		plot_pixel(xc+y,yc-x,color);
+		plot_pixel(xc-y,yc+x,color);
+		plot_pixel(xc+y,yc+x,color);
+		plot_pixel(xc-x,yc-y,color);
+		plot_pixel(xc+x,yc-y,color);
+		plot_pixel(xc-x,yc+y,color);*/
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+
+void draw_circle_angle_helper (int xc, int yc, int x, int y, double start_angle, short int color1, short int color2, short int color3, short int color4){
+	//float start_angle_tan = tan(start_angle);
+	float theta =atan2(y,x) + M_PI; //myAtan2(y,x);//M_PI;  //y/x;
+	// atan2(y,x) + M_PI; //
+	/*
+	if (theta >= start_angle && theta < start_angle + M_PI/2)
+		plot_pixel(xc+x,yc+y,color1);
+	else if (theta >= start_angle + M_PI/2 && theta < start_angle + M_PI)
+		plot_pixel(xc+x,yc+y,color2);
+	else if (theta >= start_angle - M_PI && theta < start_angle - M_PI/2)
+		plot_pixel(xc+x,yc+y,color3);
+	else if (theta >= start_angle - M_PI/2 && theta < start_angle)
+		plot_pixel(xc+x,yc+y,color4);
+	*/
+
+	if (theta >= 0 && theta < start_angle)
+		plot_pixel(xc+x,yc+y,color4);
+	else if (theta >= start_angle && theta < start_angle + M_PI/2)
+		plot_pixel(xc+x,yc+y,color1);
+	else if (theta >= start_angle + M_PI/2 && theta < start_angle + M_PI)
+		plot_pixel(xc+x,yc+y,color2);
+	else if (theta >= start_angle + M_PI && theta < start_angle + 3*M_PI/2)
+		plot_pixel(xc+x,yc+y,color3);
+	else if (theta >= start_angle + 3*M_PI/2 && theta < 2*M_PI)
+		plot_pixel(xc+x,yc+y,color4);
+
+}
+
+float myAtan2(int a, int b) {
+    float atan2val;
+    if (b > 0) {
+        atan2val = atan(a/b);
+    }
+    else if ((b < 0) && (a >= 0)) {
+        atan2val = atan(a/b) + M_PI;
+    }
+    else if ((b < 0) && (a < 0)) {
+        atan2val = atan(a/b) - M_PI;
+    }
+    else if ((b = 0) && (a > 0)) {
+        atan2val = M_PI / 2;
+    }
+    else if ((b = 0) && (a < 0)) {
+        atan2val = 0 - M_PI / 2;
+    }
+    else if ((b = 0) && (a = 0)) {
+        atan2val = 1000;               //represents undefined
+    }
+    return atan2val;
+}
+/*
 void spinningCircles(int y, int r, short int color1, short int color2, short int color3, short int color4) {
 	draw_circle_obstacle(y, r, color1, color2, color3, color4);
 	delay(0.1);
@@ -956,4 +1083,4 @@ void spinningCircles(int y, int r, short int color1, short int color2, short int
 	delay(0.1);
 	draw_circle_obstacle_shifted_color(y, r, color2, color3, color4, color1);
 	delay(0.1);
-}
+}*/
