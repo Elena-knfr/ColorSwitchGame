@@ -173,67 +173,42 @@ int main(void)
 	int rotate_speed [NUM_OBSTACLES] = {1, 1, 1};// 0.02908882, 0.02908882
 	int start_shrift [NUM_OBSTACLES] = {0,35,20};
 	int pixel_shrift [NUM_OBSTACLES] = {0,0,0};
-
-	int y_player = 200; //y coordinate of obstacle
-	int r_player = 3; //radius of player
-	int velY = 0;
-	short int color_player = 0xffff;
-
-	int game_over = 0; //initialize game over to be false
-
-	int spin_cycle = 0;
-
-	/*volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
-	int PS2_data, RVALID;
-	int keyPress;
-	char byte1 = 0, byte2 = 0;*/
-
-    //*(PS2_ptr) = 0xFF; //reset
-/*
-	right_down_arc(y_obstacle, r_obstacle, 0x10ff); //blue
-	left_down_arc(y_obstacle, r_obstacle, 0xF800); //red
-	left_up_arc(y_obstacle, r_obstacle, 0xC618); //grey
-	right_up_arc(y_obstacle, r_obstacle, 0xFFE0); //yellow*/
-
-	load_circle (y_obstacle[0], r_obstacle[0]);
-  	while(!game_over) {
-
-		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
-
-		//draw_circ(y_player, r_player, 0xffff);
-		if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
-			draw_circ(y_player, r_player, 0xffff);
-		else if (y_player + r_player > y_obstacle[1] + r_obstacle[1] && y_player + r_player < y_obstacle[0] + r_obstacle[0])
-			draw_circ(y_player, r_player, RED);
-		else if (y_player + r_player > y_obstacle[2] + r_obstacle[2] && y_player + r_player < y_obstacle[1] + r_obstacle[1])
-			draw_circ(y_player, r_player, YELLOW);
-		else {
-			draw_circ(y_player, r_player, 0xFC18);
-			//color_player = 0xFC18;
-		}
-
-/*for (int j=0; j<NUM_OBSTACLES; j++ ){
-					for (int i=0; i<232; i++){
-						if (i<29)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], YELLOW);
-						else if (i<58)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], RED);
-						else if (i<87)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREEN);
-						else if (i<116)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], BLUE);
-						else if (i<145)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], CYAN);
-						else if (i<174)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], MAGENTA);
-						else if (i<203)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], GREY);
-						else if (i<232)
-							plot_pixel(150+obstacle_array[i][0], y_obstacle[j]+obstacle_array[i][1], PINK);
-					}
-				}*/
+  short int color_obstacle [4] = {BLUE, RED, GREY, YELLOW};
 
 
+  	int y_player = 200; //y coordinate of obstacle
+  	int r_player = 3; //radius of player
+  	int velY = 0;
+  	short int color_player = 0xffff;
+  	short int ball_color [4] = {BLUE, RED, GREY, YELLOW};
+
+  	int game_over = 0; //initialize game over to be false
+
+  	int spin_cycle = 0;
+
+  	bool break_loop = false;
+
+  	load_circle (y_obstacle[0], r_obstacle[0]);
+  	draw_circ(y_player, r_player, 0xffff);
+
+    while(!game_over) {
+
+  		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
+
+  		//draw_circ(y_player, r_player, 0xffff);
+  			for(int i = 0; i < 3; i++) {
+  				if (y_player - r_player == y_obstacle[i] + r_obstacle[i]) {
+  					if(ball_color[i] == color_part_obst) /////////////////////////////
+  						draw_circ(y_player, r_player, ball_color[rand()%4]);
+  					else {
+  						break_loop = true;
+  						break;
+  					}
+  				}
+  			}
+
+  			if(break_loop == true)
+  				break;
 
 		switch (spin_cycle) {
 			case 0:
