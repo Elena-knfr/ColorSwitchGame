@@ -524,6 +524,26 @@ void startGame()
   	draw_line(75, 153, 61, 160, 0xFFEF);
   	draw_line(75, 153, 59, 153, 0xFFEF);
 
+    for(int i = 40; i < 45; i++) {
+		draw_line(i, 40, i+10, 60, BLUE);
+		draw_line(240+i, 40, 230+i, 60, BLUE);
+	}
+
+	for(int i = 50; i < 55; i++) {
+		draw_line(i, 60, i+10, 80, CYAN);
+		draw_line(220+i, 60, 210+i, 80, CYAN);
+	}
+
+	for(int i = 65; i < 70; i++) {
+		draw_line(i, 50, i-15, 60, PINK);
+		draw_line(190+i, 50, 205+i, 60, PINK);
+	}
+
+	for(int i = 50; i < 55; i++) {
+		draw_line(i, 60, i-15, 70, MAGENTA);
+		draw_line(220+i, 60, 235+i, 70, MAGENTA);
+	}
+
 }
 
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
