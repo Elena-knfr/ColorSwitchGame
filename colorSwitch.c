@@ -503,6 +503,27 @@ void startGame()
 		x++;
 	}
 
+  // middle star
+	draw_line(48, 150, 42, 160, 0xFFE1);
+	draw_line(48, 150, 54, 160, 0xFFE1);
+	draw_line(40, 153, 54, 160, 0xFFE1);
+	draw_line(56, 153, 42, 160, 0xFFE1);
+	draw_line(56, 153, 40, 153, 0xFFE1);
+
+  // left star
+	draw_line(29, 150, 23, 160, 0xFFE1);
+	draw_line(29, 150, 35, 160, 0xFFE1);
+	draw_line(21, 153, 35, 160, 0xFFE1);
+	draw_line(37, 153, 23, 160, 0xFFE1);
+	draw_line(37, 153, 21, 153, 0xFFE1);
+
+  // right star
+	draw_line(67, 150, 61, 160, 0xFFE1);
+	draw_line(67, 150, 73, 160, 0xFFE1);
+	draw_line(59, 153, 73, 160, 0xFFE1);
+	draw_line(75, 153, 61, 160, 0xFFE1);
+	draw_line(75, 153, 59, 153, 0xFFE1);
+
 }
 
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
