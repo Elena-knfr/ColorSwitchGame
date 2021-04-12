@@ -239,7 +239,6 @@ int main(void)
 							draw_circ(y_obstacle[i], r_obstacle[i], 0x0000);
 						}
 
-
 						/* shifting color elements */
 						temp_color =obstacle_array1[sizeof(obstacle_array1)/sizeof(obstacle_array1[0])-1][2];
 						for(int i=sizeof(obstacle_array1)/sizeof(obstacle_array1[0])-1; i>0; i -= rotate_speed [0])
@@ -293,13 +292,11 @@ int main(void)
 							closest_color_change_i = (closest_color_change_i+1)%NUM_OBSTACLES;
 						}
 
-
 						//check for collision
 						if (collided(closest_obstacle_i)){
 							game_over == true;
 							break;
 						}
-
 
 						RVALID = PS2_data & 0x8000;
 						if (RVALID){
@@ -398,12 +395,14 @@ float two_dis(float x1, float y1, float x2, float y2) {
    return dis;
 }
 
+// function to show start screen
 void startGame()
 {
-	erase_gameover();
-	erase_score_count();
-	erase_score();
+	erase_gameover(); // erase game over page first
+	erase_score_count(); // erase the score count
+	erase_score(); // erase the "Score: "
 
+	// write "COLOR SWITCH" string on screen
 	int x = 30;
 	int y = 2;
 	char startArray1[] = "COLOR SWITCH";
@@ -412,6 +411,7 @@ void startGame()
 		x++;
 	}
 
+	// write "Press space to start" string on screen
 	x = 30;
 	y = 4;
 	char startArray2[] = "Press space to start";
@@ -420,6 +420,7 @@ void startGame()
 		x++;
 	}
 
+	// draw 4 tick circles inside each other
 	for(int i = 50; i > 45; i--) {
   		draw_circle_obstacle(120, i, BLUE, PINK, CYAN, MAGENTA);
   	}
@@ -436,8 +437,9 @@ void startGame()
   		draw_circle_obstacle(120, i, PINK, CYAN, MAGENTA, BLUE);
   	}
 
-  	draw_triangle(145, 110, 163, 120, 145, 130);
+  	draw_triangle(145, 110, 163, 120, 145, 130); // draw triangle as a player symbol
 
+	// write "Total Stars:" string on screen
   	x = 7;
   	y = 35;
   	char startArray3[] = "Total Stars:";
@@ -467,6 +469,7 @@ void startGame()
   	draw_line(75, 153, 61, 160, 0xFFEF);
   	draw_line(75, 153, 59, 153, 0xFFEF);
 
+	// draw X-shaped and make them ticker
     for(int i = 40; i < 45; i++) {
 		draw_line(i, 40, i+10, 60, BLUE);
 		draw_line(240+i, 40, 230+i, 60, BLUE);
@@ -487,19 +490,21 @@ void startGame()
 		draw_line(220+i, 60, 235+i, 70, MAGENTA);
 	}
 
-  for(int i = 8; i > 0; i--) {
+	// draw small yellow ball
+  	for(int i = 8; i > 0; i--) {
 		draw_circle_obstacle(210, i, YELLOW, YELLOW, YELLOW, YELLOW);
 	}
 
 }
 
+// function to draw grey triangle
 void draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 	draw_line(x1, y1, x2, y2, GREY);
   	draw_line(x2, y2, x3, y3, GREY);
   	draw_line(x3, y3, x1, y1, GREY);
 }
 
-
+// function to erase messages on start display
 void eraseMessage()
 {
 	int x = 30;
@@ -528,12 +533,14 @@ void eraseMessage()
 
 }
 
+// function to plot a pixel
 void plot_pixel(int x, int y, short int line_color)
 {
 	if (is_inside_screen(x, y)) //only plot pixel if the xy coordinates are within screen bounds
     	*(short int *)(pixel_buffer_start + (y << 10) + (x << 1)) = line_color;
 }
 
+// function to swap
 void swap(int* x, int* y)
 {
     *x = *x + *y;
@@ -541,6 +548,7 @@ void swap(int* x, int* y)
     *x = *x - *y;
 }
 
+// function to draw a line using bresenham algorithm
 void draw_line(int x0, int y0, int x1, int y1, short int color)
 {
 	int is_steep = ABS(y1 - y0) > ABS(x1 - x0);
@@ -583,6 +591,7 @@ void draw_line(int x0, int y0, int x1, int y1, short int color)
 	}
 }
 
+// function to clear all shapes on the screen
 void clear_screen()
 {
     int x = 0, y = 0;
@@ -612,6 +621,7 @@ void wait_cycle()
     return; //exit when s equals to 1
 }
 
+// function to draw circle which specified x coordinate for its center using bresenham algorithm
 void draw_circ(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -640,6 +650,7 @@ void draw_circ(int yc, int r, short int color) {
 	}
 }
 
+// function to draw filled circle using bresenham algorithm
 draw_filled_circle (int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -745,6 +756,7 @@ void load_circle(int r, int obstacle_index, int array[][3], int circumference){
 	}
 }
 
+// function to draw right down arc of a circle
 void right_down_arc(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -768,6 +780,7 @@ void right_down_arc(int yc, int r, short int color) {
 	}
 }
 
+// function to draw right up arc of a circle
 void right_up_arc(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -791,6 +804,7 @@ void right_up_arc(int yc, int r, short int color) {
 	}
 }
 
+// function to draw left down arc of a circle
 void left_down_arc(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -814,6 +828,7 @@ void left_down_arc(int yc, int r, short int color) {
 	}
 }
 
+// function to draw left up arc of a circle
 void left_up_arc(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -837,6 +852,103 @@ void left_up_arc(int yc, int r, short int color) {
 	}
 }
 
+// function to draw bottom arc of a circle
+void bottom_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc+y,color);
+		plot_pixel(xc-x,yc+y,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+// function to draw right arc of a circle
+void right_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	while(x<=y)
+	{
+		plot_pixel(xc+y,yc+x,color);
+		plot_pixel(xc+y,yc-x,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+// function to draw top arc of a circle
+void top_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc-y,color);
+		plot_pixel(xc-x,yc-y,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+// function to draw left arc of a circle
+void left_arc(int yc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	int xc = 150;
+	while(x<=y)
+	{
+		plot_pixel(xc-y,yc-x,color);
+		plot_pixel(xc-y,yc+x,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+// delay function
 void delay(float number_of_seconds)
 {
     // Converting time into milli_seconds
@@ -871,6 +983,7 @@ int min (int a, int b) {
 		return b;
 }
 
+// function to show the score on player display
 void get_score(int score)
 {
 	sprintf(s,"%d",score); // convert int to string
@@ -884,6 +997,7 @@ void get_score(int score)
 
 }
 
+// function to erase "Score: "
 void erase_score() {
 	int x = 5;
 	int y = 2;
@@ -894,6 +1008,7 @@ void erase_score() {
 	}
 }
 
+// function to erase score count
 void erase_score_count() {
 	int x = 12;
 	int y = 2;
@@ -904,6 +1019,7 @@ void erase_score_count() {
 	}
 }
 
+// function to display "Score: "
 void display_score() {
 	int x = 5;
 	int y = 2;
@@ -914,6 +1030,7 @@ void display_score() {
 	}
 }
 
+// game over function
 void gameover() {
 	clear_screen();
 	erase_score();
@@ -945,12 +1062,13 @@ void gameover() {
 		x++;
 	}
 
+	// draw human face symbol
 	draw_symb(100, 60, 20, BLUE);
 	draw_symb(90, 66, 2, GREEN);
 	draw_symb(90, 54, 2, GREEN);
 	top_arc_symb(113, 60, 10, MAGENTA);
 
-
+	// draw yellow and pink arcs to make display fancier
 	bottom_arc_symb(140, 40, 40, YELLOW);
 	bottom_arc_symb(140, 200, 40, YELLOW);
 
@@ -965,6 +1083,7 @@ void gameover() {
 
 }
 
+// erase gameover messages on the screen
 void erase_gameover() {
 	clear_screen();
 
@@ -993,6 +1112,7 @@ void erase_gameover() {
 	}
 }
 
+// draw circle for human face symbol, having to choose its x and y coordinate for center
 void draw_symb(int yc, int xc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -1021,6 +1141,7 @@ void draw_symb(int yc, int xc, int r, short int color) {
 	}
 }
 
+// draw top arc of a circle, having to choose its x and y coordinate for center
 void top_arc_symb(int yc, int xc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
@@ -1044,6 +1165,7 @@ void top_arc_symb(int yc, int xc, int r, short int color) {
 	}
 }
 
+// draw bottom arc of a circle, having to choose its x and y coordinate for center
 void bottom_arc_symb(int yc, int xc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
