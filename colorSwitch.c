@@ -89,7 +89,8 @@ int GROUND = 240;
 #define	NUM_OBSTACLES 3
 #define ROTATION_SPEED 0.02908882 //angle change every 1/60 sec
 
-volatile int pixel_buffer_start; // global variable
+// global variables
+volatile int pixel_buffer_start;
 volatile char* character_buffer = (char*) 0xC9000000;
 volatile int * pixel_ctrl_ptr;
 short int WHITE = 0xFFFF;
@@ -97,10 +98,10 @@ char startArray1[] = "COLOR SWITCH";
 char startArray2[] = "Press space to start";
 char startArray3[] = "Total Stars:";
 char startArray4[] = "Score: ";
-char startArray5[] = "GAME OVER!"; ////////////////
-char startArray6[] = "Your Score: "; /////////////////
+char startArray5[] = "GAME OVER!";
+char startArray6[] = "Your Score: ";
 char s[4];
-char s1[4];/////////////
+char s1[4];
 
 int obstacle_array1[232][3];
 int obstacle_array2[288][3];
@@ -113,18 +114,18 @@ int r_obstacle [NUM_OBSTACLES] = {40, 50, 30}; //radius of obstacle
 
 int closest_obstacle_i = 0;
 
-//int player_array[24][2];
 int y_player = 200; //y coordinate of player
 short int color_player = RED;
 int r_player = 4; //radius of player
 
-//void draw_circle();
+int score;
+
+// helper functions
 void plot_pixel(int x, int y, short int line_color);
 void swap(int* x, int* y);
 void draw_line(int x0, int y0, int x1, int y1, short int color);
 void clear_screen();
 void wait_cycle();
-//void draw_();
 void draw_circ(int yc, int r, short int color);
 draw_filled_circle (int yc, int r, short int color);
 void right_down_arc(int yc, int r, short int color);
@@ -150,20 +151,18 @@ void draw_circle_angle_helper (int xc, int yc, int x, int y, double start_angle,
 float myAtan2(int a, int b);
 
 void load_circle(int r, int obstacle_index, int array[][3], int circumference);
-//void load_circle(int r, int obstacle_index);
 int find_pixel_circumference(int r);
 int min (int a, int b);
 
-int score;
 void get_score(int score);
 void erase_score();
 void display_score();
 void erase_score_count();
-void gameover(); ////////////////////////////////////////////////
-void draw_symb(int yc, int xc, int r, short int color); ///////////
-void top_arc_symb(int yc, int xc, int r, short int color); ///////////////
+void gameover();
+void draw_symb(int yc, int xc, int r, short int color);
+void top_arc_symb(int yc, int xc, int r, short int color);
 void bottom_arc_symb(int yc, int xc, int r, short int color);
-void erase_gameover(); ////////////////////////////////////////////////////////////////////////////////////////////
+void erase_gameover();
 
 bool collided (int closest);
 float two_dis(float x1, float y1, float x2, float y2);
@@ -174,12 +173,12 @@ int main(void)
     /* Read location of the pixel buffer from the pixel buffer controller */
     pixel_buffer_start = *pixel_ctrl_ptr;
 
-	clear_screen();
+	clear_screen(); // clear the screen
 
-    eraseMessage();
-	startGame();
+    eraseMessage(); // erase previous message
+	startGame(); // shows display of start
 
-	bool run_game = false;
+	bool run_game = false; // variable to find out space is pressed by player to start the game
 
 	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
 	int PS2_data, RVALID;
@@ -193,20 +192,20 @@ int main(void)
 	  	if (RVALID){
 			byte1 = byte2;
 			byte2 = PS2_data & 0xFF;;
-			if (byte2 == 0x29 && byte1 != 0xF0) { // if space is pressed
+			if (byte2 == 0x29 && byte1 != 0xF0) { // if space is pressed, player can start playing
 				run_game = true;
 				break;
 			}
 		}
 	}
 
-	clear_screen();
-	eraseMessage();
-	erase_score();/////////////////////
+	clear_screen(); // clear ths screen of start display before playing
+	eraseMessage(); // erase messages on start display
+	erase_score(); //erase previous score
 
 	if(run_game) {
 
-		display_score();//////////////////
+		display_score(); // shows "Score: "
 
 		int rotate_speed [NUM_OBSTACLES] = {1, -1, 1};// 0.02908882, 0.02908882
 		int start_shrift [NUM_OBSTACLES] = {0,35,20};
@@ -217,51 +216,17 @@ int main(void)
 
 		int game_over = 0; //initialize game over to be false
 
-		/*volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
-		int PS2_data, RVALID;
-		int keyPress;
-		char byte1 = 0, byte2 = 0;*/
-
-		//*(PS2_ptr) = 0xFF; //reset
-
-
-
 		load_circle (r_obstacle[0], 0, obstacle_array1, 232);
 		load_circle (r_obstacle[1], 1, obstacle_array2, 288);
 		load_circle (r_obstacle[2], 2, obstacle_array3, 176);
+
 		while(!game_over) {
-
-			/*printf("%d ", find_pixel_circumference(40));
-			printf("%d ", find_pixel_circumference(50));
-printf("%d ", find_pixel_circumference(30));*/
-
-		/*if(ABS(y_obstacle[2] - y_player) < r_player + r_obstacle[2])
-			draw_filled_circle(y_player, r_player, RED);
-		else if(ABS(y_obstacle[1] - y_player) < r_player + r_obstacle[1])
-			draw_filled_circle(y_player, r_player, YELLOW);
-		else if(ABS(y_obstacle[0] - y_player) < r_player + r_obstacle[0])
-			draw_filled_circle(y_player, r_player, CYAN);
-		else
-			draw_filled_circle(y_player, r_player, 0xffff);*/
 
 			PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
-			//draw_circ(y_player, r_player, 0xffff);
-			/*
-			if (y_player + r_player > y_obstacle[0] + r_obstacle[0])
-				draw_filled_circle(y_player, r_player, 0xffff);
-			else if (y_player + r_player > y_obstacle[1] + r_obstacle[1] && y_player + r_player < y_obstacle[0] + r_obstacle[0])
-				draw_filled_circle(y_player, r_player, RED);
-			else if (y_player + r_player > y_obstacle[2] + r_obstacle[2] && y_player + r_player < y_obstacle[1] + r_obstacle[1])
-				draw_filled_circle(y_player, r_player, YELLOW);
-			else {
-				draw_filled_circle(y_player, r_player, 0xFC18);
-				//color_player = 0xFC18;
-			}*/
 			draw_filled_circle(y_player, r_player, color_player);
 
 			//draw the obstacles
-			//for (int j=0; j<NUM_OBSTACLES; j++ ){
 			for (int i=0; i<sizeof(obstacle_array1)/sizeof(obstacle_array1[0]); i++){
 				plot_pixel(150+obstacle_array1[i][0], y_obstacle[0]+obstacle_array1[i][1], obstacle_array1[i][2]);
 			}
@@ -271,17 +236,14 @@ printf("%d ", find_pixel_circumference(30));*/
 			for (int i=0; i<sizeof(obstacle_array3)/sizeof(obstacle_array3[0]); i++){
 				plot_pixel(150+obstacle_array3[i][0], y_obstacle[2]+obstacle_array3[i][1], obstacle_array3[i][2]);
 			}
-			//}
 
 			wait_cycle();
+
 			//erase old frame
 			draw_filled_circle(y_player, r_player, 0x0000);
 			for (int i=0; i<NUM_OBSTACLES; i++ ){
 				draw_circ(y_obstacle[i], r_obstacle[i], 0x0000);
 			}
-
-
-
 
 			/* shifting color elements */
 			temp_color =obstacle_array1[sizeof(obstacle_array1)/sizeof(obstacle_array1[0])-1][2];
@@ -305,24 +267,6 @@ printf("%d ", find_pixel_circumference(30));*/
 			}
 			obstacle_array3[0][2]=temp_color;
 
-
-
-			/*for (int i=0; i<NUM_OBSTACLES; i++ ){
-
-
-				//obstacle_array[i] = y_obstacle[(i+2)%NUM_OBSTACLES] - 120;
-				pixel_shrift [i] += rotate_speed [i];
-
-				if (pixel_shrift[i] >= 58){
-					pixel_shrift[i] = 0;
-					if (spin_cycle == 3)
-						spin_cycle = 0;
-					else {
-						spin_cycle++;
-					}
-				}
-			}*/
-
 			//once the player jumps high enough
 			if (y_player + velY + GRAVITY > 120){
 				y_player += velY + GRAVITY;
@@ -339,11 +283,12 @@ printf("%d ", find_pixel_circumference(30));*/
 				GROUND += 120 - (y_player + velY + GRAVITY);
 				velY = velY*0.8;
 			}
-
+			// increment the score, once player exit successfully from an obstacle
+			// then display it
 			if (y_player + r_player + 5 < y_obstacle[closest_obstacle_i] - r_obstacle[closest_obstacle_i]){
 				closest_obstacle_i = (closest_obstacle_i+1)%NUM_OBSTACLES;
 				score++;
-				get_score(score);
+				get_score(score); // display score
 			}
 
 
@@ -353,7 +298,7 @@ printf("%d ", find_pixel_circumference(30));*/
 				break;
 			}
 
-
+			// pressing space repeatedly to jump the player ball upwards
 			RVALID = PS2_data & 0x8000;
 			if (RVALID){
 				byte1 = byte2;
@@ -364,20 +309,24 @@ printf("%d ", find_pixel_circumference(30));*/
 			}
 		}
 	}
-	gameover();
+
+	gameover(); // game over display
+
 	volatile int * PS2_ptrr = (int *) 0xFF200100;  // PS/2 port address
 	int PS2_dataa, RVALIDD;
 	int keyPresss;
 	char bytee1 = 0, bytee2 = 0;
 
     *(PS2_ptrr) = 0xFF; //reset
+
+	// wait for player to press space
 	while(1) {
 		PS2_dataa = *(PS2_ptrr);
 		RVALIDD = PS2_dataa & 0x8000;
 	  	if (RVALIDD){
 			bytee1 = bytee2;
 			bytee2 = PS2_dataa & 0xFF;;
-			if (bytee2 == 0x29 && bytee1 != 0xF0) { // if space is pressed
+			if (bytee2 == 0x29 && bytee1 != 0xF0) { // if space is pressed, after 2 seconds, game over display will be all black
 				delay(2);
 				erase_gameover();
 				break;
@@ -484,7 +433,6 @@ void startGame()
   		draw_circle_obstacle(120, i, PINK, CYAN, MAGENTA, BLUE);
   	}
 
-  	//draw_triangle(145, 115, 155, 120, 145, 125);
   	draw_triangle(145, 110, 163, 120, 145, 130);
 
   	x = 7;
@@ -553,7 +501,6 @@ void eraseMessage()
 {
 	int x = 30;
 	int y = 2;
-	//char startArray1[] = "";
 	for (int i = 0; i < sizeof(startArray1); i++) {
 		startArray1[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray1[i];
@@ -562,7 +509,6 @@ void eraseMessage()
 
 	x = 30;
 	y = 4;
-	//char startArray2[] = "";
 	for (int i = 0; i < sizeof(startArray2); i++) {
 		startArray2[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray2[i];
@@ -668,7 +614,6 @@ void draw_circ(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc+y,color);
@@ -697,7 +642,6 @@ draw_filled_circle (int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		draw_line(xc+x, yc+y, xc-x,yc+y, color);
@@ -798,68 +742,11 @@ void load_circle(int r, int obstacle_index, int array[][3], int circumference){
 	}
 }
 
-/*void load_circle(int r, int obstacle_index, int* array, int circumference){
-	int d=3-2*r;
-	int x=0;
-	int y=r;
-	int xc = 150;
-	int count = 0;
-	int one_eighth_circumf = circumference / 8;
-
-	while(x<=y)
-	{
-		array[count][0]=y;
-		array[count][1]=x;
-		array[count][2]=obstacle_color[obstacle_index][0];
-
-		array[2*-count-1][0]=x;
-		array[58-count-1][1]=y;
-		array[58-count-1][2]=obstacle_color[obstacle_index][0];
-
-		array[count+2*29][0]=-x;
-		array[count+2*29][1]=y;
-		array[count+2*29][2]=obstacle_color[obstacle_index][1];
-
-		array[4*29-count-1][0]=-y;
-		array[4*29-count-1][1]=x;
-		array[4*29-count-1][2]=obstacle_color[obstacle_index][1];
-
-		array[count+4*29][0]=-y;
-		array[count+4*29][1]=-x;
-		array[count+4*29][2]=obstacle_color[obstacle_index][2];
-
-		array[6*29-count-1][0]=-x;
-		array[6*29-count-1][1]=-y;
-		array[6*29-count-1][2]=obstacle_color[obstacle_index][2];
-
-		array[count+6*29][0]=x;
-		array[count+6*29][1]=-y;
-		array[count+6*29][2]=obstacle_color[obstacle_index][3];
-
-		array[8*29-count-1][0]=y;
-		array[8*29-count-1][1]=-x;
-		array[8*29-count-1][2]=obstacle_color[obstacle_index][3];
-
-		if(d<=0)
-		{
-			d=d+4*x+6;
-		}
-		else
-		{
-			d=d+4*x-4*y+10;
-			y=y-1;
-		}
-		x=x+1;
-		count++;
-	}
-}*/
-
 void right_down_arc(int yc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc+y,color);
@@ -883,7 +770,6 @@ void right_up_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc+y,yc-x,color);
@@ -907,7 +793,6 @@ void left_down_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc-x,yc+y,color);
@@ -931,7 +816,6 @@ void left_up_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc-x,yc-y,color);
@@ -955,7 +839,6 @@ void bottom_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc+y,color);
@@ -979,7 +862,6 @@ void right_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc+y,yc+x,color);
@@ -1003,7 +885,6 @@ void top_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc-y,color);
@@ -1027,7 +908,6 @@ void left_arc(int yc, int r, short int color) {
 	int x=0;
 	int y=r;
 	int xc = 150;
-	//int yc = 100;
 	while(x<=y)
 	{
 		plot_pixel(xc-y,yc-x,color);
@@ -1121,17 +1001,6 @@ void draw_obstacle_new(int yc, int r, double start_angle, short int color1, shor
 		draw_circle_angle_helper (xc, yc, +x, -y, start_angle, color1, color2, color3, color4);
 		draw_circle_angle_helper (xc, yc, -x, +y, start_angle, color1, color2, color3, color4);
 
-
-		/*
-		plot_pixel(xc+x,yc+y,color);
-		plot_pixel(xc-y,yc-x,color);
-		plot_pixel(xc+y,yc-x,color);
-		plot_pixel(xc-y,yc+x,color);
-		plot_pixel(xc+y,yc+x,color);
-		plot_pixel(xc-x,yc-y,color);
-		plot_pixel(xc+x,yc-y,color);
-		plot_pixel(xc-x,yc+y,color);*/
-
 		if(d<=0)
 		{
 			d=d+4*x+6;
@@ -1147,19 +1016,7 @@ void draw_obstacle_new(int yc, int r, double start_angle, short int color1, shor
 
 
 void draw_circle_angle_helper (int xc, int yc, int x, int y, double start_angle, short int color1, short int color2, short int color3, short int color4){
-	//float start_angle_tan = tan(start_angle);
 	float theta =atan2(y,x) + M_PI; //myAtan2(y,x);//M_PI;  //y/x;
-	// atan2(y,x) + M_PI; //
-	/*
-	if (theta >= start_angle && theta < start_angle + M_PI/2)
-		plot_pixel(xc+x,yc+y,color1);
-	else if (theta >= start_angle + M_PI/2 && theta < start_angle + M_PI)
-		plot_pixel(xc+x,yc+y,color2);
-	else if (theta >= start_angle - M_PI && theta < start_angle - M_PI/2)
-		plot_pixel(xc+x,yc+y,color3);
-	else if (theta >= start_angle - M_PI/2 && theta < start_angle)
-		plot_pixel(xc+x,yc+y,color4);
-	*/
 
 	if (theta >= 0 && theta < start_angle)
 		plot_pixel(xc+x,yc+y,color4);
@@ -1206,7 +1063,6 @@ int min (int a, int b) {
 
 void get_score(int score)
 {
-	//char s[4];
 	sprintf(s,"%d",score); // convert int to string
 
 	int x = 12;
@@ -1304,7 +1160,6 @@ void erase_gameover() {
 
 	int x = 160;
 	int y = 20;
-	//char startArray5[] = "GAME OVER";
 	for (int i = 0; i < sizeof(startArray5); i++) {
 		startArray5[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray5[i];
@@ -1313,15 +1168,11 @@ void erase_gameover() {
 
 	x = 160;
 	y = 25;
-	//char startArray6[] = "Your Score: ";
 	for (int i = 0; i < sizeof(startArray6); i++) {
 		startArray6[i] = '\0';
 		*(char *) (character_buffer + (y << 7) + x) = startArray6[i];
 		x++;
 	}
-
-	//char s1[4];
-	//sprintf(s1,"%d",score); // convert int to string
 
 	x = 173;
 	y = 25;
@@ -1336,8 +1187,7 @@ void draw_symb(int yc, int xc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
 	int y=r;
-	//int xc = 150;
-	//int yc = 100;
+
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc+y,color);
@@ -1365,8 +1215,7 @@ void top_arc_symb(int yc, int xc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
 	int y=r;
-	//int xc = 150;
-	//int yc = 100;
+
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc-y,color);
@@ -1389,8 +1238,7 @@ void bottom_arc_symb(int yc, int xc, int r, short int color) {
 	int d=3-2*r;
 	int x=0;
 	int y=r;
-	//int xc = 150;
-	//int yc = 100;
+
 	while(x<=y)
 	{
 		plot_pixel(xc+x,yc+y,color);
