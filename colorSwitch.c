@@ -97,6 +97,7 @@ char startArray1[] = "COLOR SWITCH";
 char startArray2[] = "Press Space To Start";
 char startArray3[] = "Total Stars: ";
 char startArray4[] = "Score: ";
+char s[4];
 
 int obstacle_array[232][2];
 
@@ -137,6 +138,7 @@ int score = 0;
 void get_score(int score);
 void erase_score();
 void display_score();
+void erase_score_count();
 
 int main(void)
 {
@@ -422,6 +424,8 @@ int main(void)
 
 void startGame()
 {
+	erase_score_count();
+	erase_score();
 	int x = 30;
 	int y = 2;
 	char startArray1[] = "COLOR SWITCH";
@@ -1129,7 +1133,7 @@ void display_score(){
 
 void get_score(int score)
 {
-	char s[4];
+	//char s[4];
 	sprintf(s,"%d",score); // convert int to string
 
 	int x = 12;
@@ -1150,6 +1154,17 @@ void erase_score() {
 		x++;
 	}
 }
+
+void erase_score_count() {
+	int x = 12;
+	int y = 2;
+	for (int i = 0; i < sizeof(s); i++) {
+		s[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = s[i];
+		x++;
+	}
+}
+
 void display_score() {
 	int x = 5;
 	int y = 2;
