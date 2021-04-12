@@ -1162,10 +1162,10 @@ void gameover() {
 		x++;
 	}
 
-	draw_symb(100, 60, 20, 0xffff);
-	draw_symb(90, 66, 2, 0xffff);
-	draw_symb(90, 54, 2, 0xffff);
-	top_arc_symb(110, 60, 5, 0xffff);
+  draw_symb(100, 60, 20, BLUE);
+	draw_symb(90, 66, 2, GREEN);
+	draw_symb(90, 54, 2, GREEN);
+	top_arc_symb(113, 60, 10, RED);
 
 
 }
