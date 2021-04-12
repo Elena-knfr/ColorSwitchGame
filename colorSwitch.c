@@ -94,8 +94,9 @@ volatile char* character_buffer = (char*) 0xC9000000;
 volatile int * pixel_ctrl_ptr;
 short int WHITE = 0xFFFF;
 char startArray1[] = "COLOR SWITCH";
-char startArray2[] = "Press space to start";
-char startArray3[] = "Total Stars:";
+char startArray2[] = "Press Space To Start";
+char startArray3[] = "Total Stars: ";
+char startArray4[] = "Score: ";
 
 int obstacle_array[232][2];
 
@@ -132,6 +133,11 @@ float myAtan2(int a, int b);
 void load_circle(int yc, int r);
 int min (int a, int b);
 
+int score = 0;
+void get_score(int score);
+void erase_score();
+void display_score();
+
 int main(void)
 {
     pixel_ctrl_ptr = (int *)0xFF203020;
@@ -166,14 +172,16 @@ int main(void)
 
 	clear_screen();
 	eraseMessage();
+	erase_score();
 	if(run_game) {
+		display_score();
 
 	int y_obstacle [NUM_OBSTACLES] = {50, -70, -190}; //y coordinate of obstacle
 	int r_obstacle [NUM_OBSTACLES] = {40, 40, 40}; //radius of obstacle
 	int rotate_speed [NUM_OBSTACLES] = {1, 1, 1};// 0.02908882, 0.02908882
 	int start_shrift [NUM_OBSTACLES] = {0,35,20};
 	int pixel_shrift [NUM_OBSTACLES] = {0,0,0};
-  short int color_obstacle [4] = {BLUE, RED, GREY, YELLOW};
+    short int color_obstacle [4] = {BLUE, RED, GREY, YELLOW};
 
 
   	int y_player = 200; //y coordinate of obstacle
@@ -195,19 +203,29 @@ int main(void)
 
   		PS2_data = *(PS2_ptr); // read the Data register in the PS/2 port
 
-      //collision detection
-      if(ABS(y_obstacle[2] - y_player) < r_player + r_obstacle[2])
-			   draw_circ(y_player, r_player, RED);
-		  else if(ABS(y_obstacle[1] - y_player) < r_player + r_obstacle[1])
-			   draw_circ(y_player, r_player, YELLOW);
-		  else if(ABS(y_obstacle[0] - y_player) < r_player + r_obstacle[0])
-			   draw_circ(y_player, r_player, CYAN);
-		  else
-			   draw_circ(y_player, r_player, 0xffff);
+		// collision detection
+		if(ABS(y_obstacle[2] - y_player) < r_player + r_obstacle[2]) {
+			draw_circ(y_player, r_player, RED);
+			score++;
+			get_score(score);
+		}
+		else if(ABS(y_obstacle[1] - y_player) < r_player + r_obstacle[1]) {
+			draw_circ(y_player, r_player, YELLOW);
+			score++;
+			get_score(score);
+		}
+		else if(ABS(y_obstacle[0] - y_player) < r_player + r_obstacle[0]) {
+			draw_circ(y_player, r_player, CYAN);
+			score++;
+			get_score(score);
+		}
+		else
+			draw_circ(y_player, r_player, 0xffff);
 
-      /*
-      //draw_circ(y_player, r_player, 0xffff);
-  			for(int i = 0; i < 3; i++) {
+
+
+		/*//draw_circ(y_player, r_player, 0xffff);
+  		for(int i = 0; i < 3; i++) {
   				if (y_player - r_player == y_obstacle[i] + r_obstacle[i]) {
   					if(ball_color[i] == color_part_obst) /////////////////////////////
   						draw_circ(y_player, r_player, ball_color[rand()%4]);
@@ -218,9 +236,9 @@ int main(void)
   				}
   			}
 
-  			if(break_loop == true)
+  		if(break_loop == true)
   				break;
-      */
+*/
 		switch (spin_cycle) {
 			case 0:
 				//draw_obstacle_new(y_obstacle[0], r_obstacle[0], start_angle[0], BLUE, RED, GREY, YELLOW);
@@ -399,6 +417,7 @@ int main(void)
 		}*/
 	}
 }
+	erase_score();
 }
 
 void startGame()
@@ -1056,4 +1075,87 @@ int min (int a, int b) {
 		return a;
 	else
 		return b;
+}
+/*
+void display_score(){
+
+    volatile int *HEX_ptr0 = (int *) 0xFF200020; //for score
+
+	unsigned char seg_table[] = {
+        0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07,
+        0x7F, 0x67, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71};
+	unsigned char hex_segs[] = {0, 0};
+
+
+
+    unsigned char s0 = 0;
+    unsigned char s1 = 0;
+
+    int count = score;
+    int remainder,quotient;
+    remainder = count % 10;
+    quotient = count / 10;
+
+
+    switch(remainder){
+        case 0 : hex_segs[0] = 0x3F; break;
+        case 1 : hex_segs[0] = 0x06; break;
+        case 2 : hex_segs[0] = 0x5B; break;
+        case 3 : hex_segs[0] = 0x4F; break;
+        case 4 : hex_segs[0] = 0x66; break;
+        case 5 : hex_segs[0] = 0x6D; break;
+        case 6 : hex_segs[0] = 0x7D; break;
+        case 7 : hex_segs[0] = 0x07; break;
+        case 8 : hex_segs[0] = 0x7F; break;
+        case 9 : hex_segs[0] = 0x67; break;
+    }
+    switch(quotient){
+        case 0 : hex_segs[1] = 0x3F; break;
+        case 1 : hex_segs[1] = 0x06; break;
+        case 2 : hex_segs[1] = 0x5B; break;
+        case 3 : hex_segs[1] = 0x4F; break;
+        case 4 : hex_segs[1] = 0x66; break;
+        case 5 : hex_segs[1] = 0x6D; break;
+        case 6 : hex_segs[1] = 0x7D; break;
+        case 7 : hex_segs[1] = 0x07; break;
+        case 8 : hex_segs[1] = 0x7F; break;
+        case 9 : hex_segs[1] = 0x67; break;
+    }
+	 *HEX_ptr0 =  *(int *)(hex_segs);
+
+}
+*/
+
+
+void get_score(int score)
+{
+	char s[4];
+	sprintf(s,"%d",score); // convert int to string
+
+	int x = 12;
+	int y = 2;
+	for (int i = 0; i < sizeof(s); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = s[i];
+		x++;
+	}
+
+}
+
+void erase_score() {
+	int x = 5;
+	int y = 2;
+	for (int i = 0; i < sizeof(startArray4); i++) {
+		startArray4[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray4[i];
+		x++;
+	}
+}
+void display_score() {
+	int x = 5;
+	int y = 2;
+	char startArray4[] = "Score: ";
+	for (int i = 0; i < sizeof(startArray4); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = startArray4[i];
+		x++;
+	}
 }
