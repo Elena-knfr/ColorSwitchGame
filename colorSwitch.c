@@ -97,7 +97,10 @@ char startArray1[] = "COLOR SWITCH";
 char startArray2[] = "Press Space To Start";
 char startArray3[] = "Total Stars: ";
 char startArray4[] = "Score: ";
+char startArray5[] = "GAME OVER!"; ////////////////
+char startArray6[] = "Your Score: "; /////////////////
 char s[4];
+char s1[4];/////////////
 
 int obstacle_array[232][2];
 
@@ -139,6 +142,9 @@ void get_score(int score);
 void erase_score();
 void display_score();
 void erase_score_count();
+void gameover(); ////////////////////////////////////////////////
+void draw_symb(int yc, int xc, int r, short int color); ///////////
+void top_arc_symb(int yc, int xc, int r, short int color); ///////////////
 
 int main(void)
 {
@@ -1122,5 +1128,97 @@ void display_score() {
 	for (int i = 0; i < sizeof(startArray4); i++) {
 		*(char *) (character_buffer + (y << 7) + x) = startArray4[i];
 		x++;
+	}
+}
+
+void gameover() {
+	clear_screen();
+	erase_score();
+	erase_score_count();
+
+	int x = 160;
+	int y = 20;
+	char startArray5[] = "GAME OVER";
+	for (int i = 0; i < sizeof(startArray5); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = startArray5[i];
+		x++;
+	}
+
+	x = 160;
+	y = 25;
+	char startArray6[] = "Your Score: ";
+	for (int i = 0; i < sizeof(startArray6); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = startArray6[i];
+		x++;
+	}
+
+	char s1[4];
+	sprintf(s1,"%d",score); // convert int to string
+
+	x = 170;
+	y = 25;
+	for (int i = 0; i < sizeof(s1); i++) {
+		*(char *) (character_buffer + (y << 7) + x) = s1[i];
+		x++;
+	}
+
+	draw_symb(100, 60, 20, 0xffff);
+	draw_symb(90, 66, 2, 0xffff);
+	draw_symb(90, 54, 2, 0xffff);
+	top_arc_symb(110, 60, 5, 0xffff);
+
+
+}
+
+void draw_symb(int yc, int xc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	//int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc+y,color);
+		plot_pixel(xc-y,yc-x,color);
+		plot_pixel(xc+y,yc-x,color);
+		plot_pixel(xc-y,yc+x,color);
+		plot_pixel(xc+y,yc+x,color);
+		plot_pixel(xc-x,yc-y,color);
+		plot_pixel(xc+x,yc-y,color);
+		plot_pixel(xc-x,yc+y,color);
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
+	}
+}
+
+void top_arc_symb(int yc, int xc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	//int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc-y,color);
+		plot_pixel(xc-x,yc-y,color);
+
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
 	}
 }
