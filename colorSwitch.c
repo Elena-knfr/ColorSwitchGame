@@ -162,6 +162,7 @@ void erase_score_count();
 void gameover(); ////////////////////////////////////////////////
 void draw_symb(int yc, int xc, int r, short int color); ///////////
 void top_arc_symb(int yc, int xc, int r, short int color); ///////////////
+void bottom_arc_symb(int yc, int xc, int r, short int color);
 void erase_gameover(); ////////////////////////////////////////////////////////////////////////////////////////////
 
 bool collided (int closest);
@@ -363,7 +364,7 @@ printf("%d ", find_pixel_circumference(30));*/
 			}
 		}
 	}
-  gameover();
+	gameover();
 	volatile int * PS2_ptrr = (int *) 0xFF200100;  // PS/2 port address
 	int PS2_dataa, RVALIDD;
 	int keyPresss;
@@ -385,7 +386,6 @@ printf("%d ", find_pixel_circumference(30));*/
 	}
 
 }
-
 
 bool collided (int closest) {
 	float distance;
@@ -448,6 +448,7 @@ float two_dis(float x1, float y1, float x2, float y2) {
 
 void startGame()
 {
+	erase_gameover();
 	erase_score_count();
 	erase_score();
 
@@ -1281,9 +1282,54 @@ void gameover() {
 	draw_symb(100, 60, 20, BLUE);
 	draw_symb(90, 66, 2, GREEN);
 	draw_symb(90, 54, 2, GREEN);
-	top_arc_symb(113, 60, 10, RED);
+	top_arc_symb(113, 60, 10, MAGENTA);
 
 
+	bottom_arc_symb(140, 40, 40, YELLOW);
+	bottom_arc_symb(140, 200, 40, YELLOW);
+
+	top_arc_symb(200, 120, 40, PINK);
+	top_arc_symb(200, 280, 40, PINK);
+
+	bottom_arc_symb(10, 40, 40, YELLOW);
+	bottom_arc_symb(10, 200, 40, YELLOW);
+
+	top_arc_symb(70, 120, 40, PINK);
+	top_arc_symb(70, 280, 40, PINK);
+
+}
+
+void erase_gameover() {
+	clear_screen();
+
+	int x = 160;
+	int y = 20;
+	//char startArray5[] = "GAME OVER";
+	for (int i = 0; i < sizeof(startArray5); i++) {
+		startArray5[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray5[i];
+		x++;
+	}
+
+	x = 160;
+	y = 25;
+	//char startArray6[] = "Your Score: ";
+	for (int i = 0; i < sizeof(startArray6); i++) {
+		startArray6[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray6[i];
+		x++;
+	}
+
+	//char s1[4];
+	//sprintf(s1,"%d",score); // convert int to string
+
+	x = 173;
+	y = 25;
+	for (int i = 0; i < sizeof(s1); i++) {
+		s1[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = s1[i];
+		x++;
+	}
 }
 
 void draw_symb(int yc, int xc, int r, short int color) {
@@ -1339,35 +1385,26 @@ void top_arc_symb(int yc, int xc, int r, short int color) {
 	}
 }
 
-void erase_gameover() {
-	clear_screen();
+void bottom_arc_symb(int yc, int xc, int r, short int color) {
+	int d=3-2*r;
+	int x=0;
+	int y=r;
+	//int xc = 150;
+	//int yc = 100;
+	while(x<=y)
+	{
+		plot_pixel(xc+x,yc+y,color);
+		plot_pixel(xc-x,yc+y,color);
 
-	int x = 160;
-	int y = 20;
-	//char startArray5[] = "GAME OVER";
-	for (int i = 0; i < sizeof(startArray5); i++) {
-		startArray5[i] = '\0';
-		*(char *) (character_buffer + (y << 7) + x) = startArray5[i];
-		x++;
-	}
-
-	x = 160;
-	y = 25;
-	//char startArray6[] = "Your Score: ";
-	for (int i = 0; i < sizeof(startArray6); i++) {
-		startArray6[i] = '\0';
-		*(char *) (character_buffer + (y << 7) + x) = startArray6[i];
-		x++;
-	}
-
-	//char s1[4];
-	//sprintf(s1,"%d",score); // convert int to string
-
-	x = 173;
-	y = 25;
-	for (int i = 0; i < sizeof(s1); i++) {
-		s1[i] = '\0';
-		*(char *) (character_buffer + (y << 7) + x) = s1[i];
-		x++;
+		if(d<=0)
+		{
+			d=d+4*x+6;
+		}
+		else
+		{
+			d=d+4*x-4*y+10;
+			y=y-1;
+		}
+		x=x+1;
 	}
 }
