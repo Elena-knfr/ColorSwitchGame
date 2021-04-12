@@ -162,6 +162,7 @@ void erase_score_count();
 void gameover(); ////////////////////////////////////////////////
 void draw_symb(int yc, int xc, int r, short int color); ///////////
 void top_arc_symb(int yc, int xc, int r, short int color); ///////////////
+void erase_gameover(); ////////////////////////////////////////////////////////////////////////////////////////////
 
 bool collided (int closest);
 float two_dis(float x1, float y1, float x2, float y2);
@@ -362,9 +363,29 @@ printf("%d ", find_pixel_circumference(30));*/
 			}
 		}
 	}
-	gameover();
+  gameover();
+	volatile int * PS2_ptrr = (int *) 0xFF200100;  // PS/2 port address
+	int PS2_dataa, RVALIDD;
+	int keyPresss;
+	char bytee1 = 0, bytee2 = 0;
+
+    *(PS2_ptrr) = 0xFF; //reset
+	while(1) {
+		PS2_dataa = *(PS2_ptrr);
+		RVALIDD = PS2_dataa & 0x8000;
+	  	if (RVALIDD){
+			bytee1 = bytee2;
+			bytee2 = PS2_dataa & 0xFF;;
+			if (bytee2 == 0x29 && bytee1 != 0xF0) { // if space is pressed
+				delay(2);
+				erase_gameover();
+				break;
+			}
+		}
+	}
 
 }
+
 
 bool collided (int closest) {
 	float distance;
@@ -1315,5 +1336,38 @@ void top_arc_symb(int yc, int xc, int r, short int color) {
 			y=y-1;
 		}
 		x=x+1;
+	}
+}
+
+void erase_gameover() {
+	clear_screen();
+
+	int x = 160;
+	int y = 20;
+	//char startArray5[] = "GAME OVER";
+	for (int i = 0; i < sizeof(startArray5); i++) {
+		startArray5[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray5[i];
+		x++;
+	}
+
+	x = 160;
+	y = 25;
+	//char startArray6[] = "Your Score: ";
+	for (int i = 0; i < sizeof(startArray6); i++) {
+		startArray6[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = startArray6[i];
+		x++;
+	}
+
+	//char s1[4];
+	//sprintf(s1,"%d",score); // convert int to string
+
+	x = 173;
+	y = 25;
+	for (int i = 0; i < sizeof(s1); i++) {
+		s1[i] = '\0';
+		*(char *) (character_buffer + (y << 7) + x) = s1[i];
+		x++;
 	}
 }
