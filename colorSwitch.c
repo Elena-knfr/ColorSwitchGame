@@ -58,7 +58,7 @@
 #define HPS_TIMER2_BASE       0xFFD00000
 #define HPS_TIMER3_BASE       0xFFD01000
 #define FPGA_BRIDGE           0xFFD0501C
-
+//
 /* ARM A9 MPCORE devices */
 #define   PERIPH_BASE         0xFFFEC000    // base address of peripheral devices
 #define   MPCORE_PRIV_TIMER   0xFFFEC600    // PERIPH_BASE + 0x0600
